@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TarKiM - Kumpulan Revolusi Bahasa</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Urbanist:wght@400;600;700;800&family=Press+Start+2P&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- SweetAlert2 & HTML2PDF & Confetti & Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SweetAlert2 & HTML2PDF & Confetti & Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- TAMBAH KOD FIREBASE INI DI SINI -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Comfortaa', 'sans-serif'],
+                        body: ['Urbanist', 'sans-serif'],
+                        pixel: ['"Press Start 2P"', 'cursive'], 
+                        signature: ['"Dancing Script"', 'cursive'],
+                    },
+                    colors: {
+                        brand: { cream: '#FAF6EE', mint: '#10B981', softMint: '#ECFDF5', darkSlate: '#1E293B', pastelBlue: '#DBEAFE', pastelYellow: '#FEF3C7', pastelPink: '#FCE7F3', pastelPurple: '#F3E8FF' }
+                    },
+                    animation: {
+                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+                        'bounce-fast': 'bounce 0.5s infinite',
+                        'coin-pop': 'coinPop 0.5s ease-out forwards',
+                        'float': 'pulse 2s infinite',
+                        'walk': 'bounce 0.3s infinite alternate',
+                        'flash-red': 'flashRed 0.5s ease-out'
+                    },
+                    keyframes: {
+                        shake: { '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' }, '20%, 80%': { transform: 'translate3d(2px, 0, 0)' }, '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' }, '40%, 60%': { transform: 'translate3d(4px, 0, 0)' } },
+                        coinPop: { '0%': { transform: 'translateY(0) scale(1)', opacity: 1 }, '50%': { transform: 'translateY(-30px) scale(1.5)', opacity: 1 }, '100%': { transform: 'translateY(-50px) scale(1)', opacity: 0 } },
+                        flashRed: { '0%, 100%': { backgroundColor: 'transparent' }, '50%': { backgroundColor: 'rgba(239, 68, 68, 0.4)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Urbanist', sans-serif; background-color: #F1F5F9; }
+        .bounce-btn:active { transform: scale(0.95); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #F1F5F9; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        
+        /* Balapan Track & Field */
+        .track-field { background: repeating-linear-gradient(90deg, #E11D48, #E11D48 12px, #BE123C 12px, #BE123C 24px); position: relative; border-top: 3px solid #FFFFFF; border-bottom: 3px solid #FFFFFF; }
+        .track-line { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background-color: rgba(255, 255, 255, 0.6); transform: translateY(-50%); border-style: dashed; }
+        
+        /* Game Cabaran TarKiM (Side Scrolling) */
+        .game-world-container { width: 100%; height: 100%; position: relative; background: linear-gradient(180deg, #60A5FA 0%, #BAE6FD 100%); overflow: hidden; }
+        .scrolling-layer { position: absolute; height: 100%; width: 5000px; left: 0; transition: left 0.1s linear; }
+        .mario-ground { position: absolute; bottom: 0; width: 100%; height: 80px; background-color: #22C55E; border-top: 6px solid #16A34A; background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); }
+        .station-gate { position: absolute; bottom: 80px; width: 120px; height: 160px; background: rgba(255,255,255,0.2); border: 4px dashed #FFFFFF; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .mario-block { background-color: #F59E0B; border: 4px solid #B45309; border-radius: 8px; box-shadow: inset -4px -4px 0px rgba(0,0,0,0.2); transition: all 0.2s; cursor: pointer; }
+        .mario-block:hover { transform: scale(1.05); }
+        .player-sprite { transition: transform 0.1s linear; } 
+        
+        /* Drag & Drop */
+        .drag-over { border-color: #10B981 !important; background-color: #ECFDF5 !important; transform: scale(1.02); }
+        .draggable-item { cursor: grab; transition: all 0.2s ease; }
+        .draggable-item:active { cursor: grabbing; }
+        
+        /* PDF Print Styles */
+        @media print {
+            body { background-color: white !important; }
+            #app-canvas, #bgm-audio, .swal2-container, .no-print { display: none !important; }
+            #print-report-section { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-0 sm:p-4 select-none relative" id="main-body">
+
+    <!-- Efek Flash Merah apabila salah -->
+    <div id="wrong-flash-overlay" class="pointer-events-none fixed inset-0 z-[200] hidden"></div>
+
+    <!-- AUDIO LATAR BELAKANG -->
+    <audio id="bgm-audio" loop src="https://cdn.pixabay.com/download/audio/2022/05/16/audio_db6591201e.mp3?filename=stranger-things-107662.mp3"></audio>
+
+    <!-- SECTION LAPORAN PDF -->
+    <div id="print-report-section" class="hidden fixed inset-0 z-[100] bg-white overflow-y-auto text-slate-800 p-8">
+        <div id="report-content-wrapper" class="max-w-4xl mx-auto bg-white p-10 border-2 border-slate-100 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-center mb-8 border-b-4 border-brand-mint pb-6">
+                <div>
+                    <h1 class="text-3xl font-heading font-bold text-brand-darkSlate">Laporan Prestasi TarKiM</h1>
+                    <p class="text-brand-mint font-bold text-sm tracking-widest uppercase mt-1">Kumpulan Revolusi Bahasa</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold text-slate-400 text-xs uppercase">Tarikh Cetakan</p>
+                    <p class="font-bold text-lg text-slate-700" id="report-date"></p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                <div><p class="text-[10px] font-bold text-slate-400 uppercase">Nama Penuh</p><p class="text-lg font-bold text-slate-800" id="report-name">-</p></div>
+                <div><p class="text-[10px] font-bold text-slate-400 uppercase">Kelas</p><p class="text-lg font-bold text-slate-800" id="report-class">-</p></div>
+                <div><p class="text-[10px] font-bold text-slate-400 uppercase">Aliran</p><p class="text-lg font-bold text-slate-800" id="report-aliran">-</p></div>
+                <div class="md:col-span-2"><p class="text-[10px] font-bold text-slate-400 uppercase">Sekolah</p><p class="text-lg font-bold text-slate-800" id="report-sekolah">-</p></div>
+                <div><p class="text-[10px] font-bold text-slate-400 uppercase">Skor Aktiviti: <span id="report-activity" class="text-indigo-600"></span></p><p class="text-2xl font-bold text-emerald-600" id="report-score">-</p></div>
+            </div>
+
+            <h3 class="font-bold text-lg mb-4 text-slate-800 flex items-center gap-2"><i class="fa-solid fa-list-check text-brand-mint"></i> Analisis Jawapan:</h3>
+            <div class="overflow-hidden border border-slate-200 rounded-xl mb-10">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-600 text-xs border-b border-slate-200 uppercase">
+                            <th class="p-3 w-1/3">Item Soalan</th>
+                            <th class="p-3 w-1/4">Jawapan Anda</th>
+                            <th class="p-3 w-1/4">Skema Betul</th>
+                            <th class="p-3 text-center">Keputusan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-table-body" class="text-sm divide-y divide-slate-100 bg-white"></tbody>
+                </table>
+            </div>
+
+            <div class="mt-16 pt-8 flex justify-between items-end">
+                <div class="text-xs text-slate-400 italic">Laporan ini dijana secara digital oleh Sistem TarKiM V8.0</div>
+                <div class="text-center">
+                    <p class="font-signature text-4xl text-brand-darkSlate mb-0 leading-none">amirul</p>
+                    <p class="border-t-2 border-slate-800 w-64 pt-2 font-bold text-slate-800 text-sm uppercase">Mohamad Amirul Husni bin Mohd Nasir</p>
+                    <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Guru Penasihat Kumpulan Revolusi Bahasa</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="report-buttons" class="mt-8 flex gap-4 justify-center no-print pb-20">
+            <button onclick="downloadPDF()" class="px-8 py-4 bg-brand-mint text-white font-bold rounded-2xl shadow-xl hover:bg-emerald-600 transition-all flex items-center gap-2 bounce-btn">
+                <i class="fa-solid fa-file-pdf text-xl"></i> Muat Turun Laporan (PDF)
+            </button>
+            <button onclick="window.print()" class="px-8 py-4 bg-blue-500 text-white font-bold rounded-2xl shadow-xl hover:bg-blue-600 transition-all flex items-center gap-2 bounce-btn">
+                <i class="fa-solid fa-print text-xl"></i> Cetak Laporan
+            </button>
+            <button onclick="closeReport()" class="px-8 py-4 bg-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-slate-300 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-times"></i> Tutup
+            </button>
+        </div>
+    </div>
+
+    <!-- CANVAS UTAMA APLIKASI -->
+    <div id="app-canvas" class="w-full max-w-[1280px] h-[720px] bg-brand-cream rounded-2xl shadow-2xl overflow-hidden relative border-4 border-white flex flex-col justify-between">
+        
+        <header id="app-header" class="hidden w-full px-6 py-4 bg-white/90 backdrop-blur-md border-b border-slate-100 flex justify-between items-center z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-brand-mint rounded-full flex items-center justify-center text-white font-bold text-xl font-heading shadow-md">T</div>
+                <div>
+                    <h1 class="font-heading font-bold text-lg text-brand-darkSlate leading-tight uppercase tracking-tighter">TarKiM</h1>
+                    <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Kumpulan Revolusi Bahasa</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleAudio()" id="btn-audio-toggle" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:text-emerald-500 transition-all shadow-sm"><i class="fa-solid fa-music"></i></button>
+                <div class="bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-full flex items-center gap-2 shadow-sm cursor-pointer hover:bg-emerald-100" onclick="showLeaderboard()">
+                    <i id="header-avatar-icon" class="fa-solid fa-user-astronaut text-brand-mint"></i>
+                    <span id="header-user-info" class="font-bold text-slate-700 text-xs sm:text-sm">Murid</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow flex flex-col items-center justify-start px-12 py-6 z-10 overflow-y-auto w-full relative">
+            
+            <!-- 1. SKRIN LOG MASUK -->
+            <div id="screen-login" class="w-full max-w-md bg-white p-8 rounded-3xl shadow-2xl border border-slate-100 flex flex-col items-center my-auto">
+                <div class="w-20 h-20 bg-brand-softMint rounded-full flex items-center justify-center text-brand-mint text-4xl mb-4 shadow-inner"><i class="fa-solid fa-rocket animate-bounce"></i></div>
+                <h2 class="font-heading font-bold text-2xl text-brand-darkSlate mb-1 text-center">Log Masuk</h2>
+                <p class="text-slate-400 text-[10px] mb-6 text-center font-bold uppercase tracking-widest">Aplikasi Inovasi Kumpulan Revolusi Bahasa</p>
+                
+                <div class="w-full space-y-3">
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-bold uppercase text-slate-500 mb-2 text-center">Pilih Avatar</label>
+                        <div class="flex justify-center gap-3" id="avatar-selection-container"></div>
+                    </div>
+                    
+                    <input type="text" id="input-name" placeholder="Nama Penuh Anda" class="w-full px-5 py-3 rounded-2xl border-2 border-slate-100 focus:border-brand-mint outline-none font-bold text-slate-700 text-sm">
+                    
+                    <div class="flex gap-3">
+                        <input type="text" id="input-class" placeholder="Kelas (Cth: 6 Bestari)" class="w-1/2 px-5 py-3 rounded-2xl border-2 border-slate-100 focus:border-brand-mint outline-none font-bold text-slate-700 text-sm">
+                        <select id="input-aliran" class="w-1/2 px-4 py-3 rounded-2xl border-2 border-slate-100 focus:border-brand-mint outline-none font-bold text-slate-600 text-sm bg-white">
+                            <option value="">Pilih Aliran...</option>
+                            <option value="Perdana">Perdana</option>
+                            <option value="Pendidikan Khas">Pendidikan Khas</option>
+                        </select>
+                    </div>
+                    
+                    <input type="text" id="input-sekolah" placeholder="Nama Sekolah (Cth: SK Pendidikan Khas Kuantan)" class="w-full px-5 py-3 rounded-2xl border-2 border-slate-100 focus:border-brand-mint outline-none font-bold text-slate-700 text-sm">
+                    
+function handleLogin() { 
+    const name = document.getElementById('input-name').value.trim(); 
+    const cls = document.getElementById('input-class').value.trim(); 
+    const sek = document.getElementById('input-sekolah').value.trim(); 
+    const alr = document.getElementById('input-aliran').value;
+    
+    if (!name || !cls || !sek || !alr) { 
+        Swal.fire('Opps!', 'Sila lengkapkan semua maklumat (Nama, Kelas, Sekolah, Aliran).', 'warning'); 
+        playSfx('fail'); 
+        return; 
+    } 
+    
+    const userId = `${name}_${cls}`; 
+    if (!usersProfileDatabase[userId]) { 
+        usersProfileDatabase[userId] = { name: name, class: cls, sekolah: sek, aliran: alr, avatar: selectedAvatar, stars: 0 }; 
+    } else { 
+        usersProfileDatabase[userId].avatar = selectedAvatar; 
+        usersProfileDatabase[userId].sekolah = sek; 
+        usersProfileDatabase[userId].aliran = alr; 
+    } 
+    
+    // Ini arahan baharu Firebase menggantikan localStorage
+    db.ref('tarkim/users/' + userId).set(usersProfileDatabase[userId]); 
+    
+    currentUser = usersProfileDatabase[userId]; 
+    starsCollected = currentUser.stars || 0; 
+    
+    document.getElementById('header-user-info').innerText = `${name} (${cls})`; 
+    document.getElementById('header-avatar-icon').className = `fa-solid ${selectedAvatar} text-brand-mint`; 
+    document.getElementById('app-header').classList.remove('hidden');
+    
+    updateStarsDisplay(); 
+    if(!isAudioPlaying) toggleAudio(); 
+    playSfx('success'); 
+    showScreen('screen-menu'); 
+}
+                    <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
+                        <button onclick="showAdminView()" class="text-slate-300 hover:text-slate-500 text-[10px] font-bold uppercase tracking-widest"><i class="fa-solid fa-key"></i> Pentadbir</button>
+                        <button onclick="showLeaderboardFromLogin()" class="text-amber-500 text-[10px] font-bold uppercase tracking-widest"><i class="fa-solid fa-trophy"></i> Juara</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. SKRIN MENU UTAMA -->
+            <div id="screen-menu" class="hidden w-full max-w-4xl flex flex-col items-center my-auto">
+                <h2 class="font-heading font-bold text-3xl text-brand-darkSlate mb-8 text-center">Menu Utama</h2>
+                <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="showSection('nota')" class="bounce-btn bg-white border border-slate-100 p-5 rounded-3xl flex items-center gap-5 shadow-sm hover:shadow-md text-left transition-all">
+                        <div class="w-14 h-14 bg-brand-pastelBlue rounded-2xl flex items-center justify-center text-blue-600 text-2xl shadow-inner"><i class="fa-solid fa-book-open"></i></div>
+                        <div><h3 class="font-heading font-bold text-xl text-brand-darkSlate">Nota Interaktif</h3><p class="text-slate-500 text-xs">Peleburan PTKS & Track & Field.</p></div>
+                    </button>
+                    <button onclick="showSection('teknik')" class="bounce-btn bg-white border border-slate-100 p-5 rounded-3xl flex items-center gap-5 shadow-sm hover:shadow-md text-left transition-all">
+                        <div class="w-14 h-14 bg-brand-softMint rounded-2xl flex items-center justify-center text-brand-mint text-2xl shadow-inner"><i class="fa-solid fa-lightbulb"></i></div>
+                        <div><h3 class="font-heading font-bold text-xl text-brand-darkSlate">Teknik TarKiM</h3><p class="text-slate-500 text-xs">Kuasai kedudukan imbuhan.</p></div>
+                    </button>
+                    <button onclick="showSection('video')" class="bounce-btn bg-white border border-slate-100 p-5 rounded-3xl flex items-center gap-5 shadow-sm hover:shadow-md text-left transition-all">
+                        <div class="w-14 h-14 bg-brand-pastelYellow rounded-2xl flex items-center justify-center text-amber-500 text-2xl shadow-inner"><i class="fa-solid fa-play"></i></div>
+                        <div><h3 class="font-heading font-bold text-xl text-brand-darkSlate">Video PdP</h3><p class="text-slate-500 text-xs">Tonton video penerangan pakar.</p></div>
+                    </button>
+                    <button onclick="showSection('permainan')" class="bounce-btn bg-white border border-slate-100 p-5 rounded-3xl flex items-center gap-5 shadow-sm hover:shadow-md text-left transition-all">
+                        <div class="w-14 h-14 bg-brand-pastelPink rounded-2xl flex items-center justify-center text-pink-500 text-2xl shadow-inner"><i class="fa-solid fa-gamepad"></i></div>
+                        <div><h3 class="font-heading font-bold text-xl text-brand-darkSlate">Latihan Pengukuhan</h3><p class="text-slate-500 text-xs">Tolak, Tarik & Bedah Kata.</p></div>
+                    </button>
+                    <button onclick="showSection('kuiz')" class="bounce-btn bg-white border border-slate-100 p-5 rounded-3xl flex items-center gap-5 shadow-sm hover:shadow-md text-left transition-all">
+                        <div class="w-14 h-14 bg-brand-pastelPurple rounded-2xl flex items-center justify-center text-purple-600 text-2xl shadow-inner"><i class="fa-solid fa-circle-question"></i></div>
+                        <div><h3 class="font-heading font-bold text-xl text-brand-darkSlate">Uji Minda (Kuiz)</h3><p class="text-slate-500 text-xs">Uji kefahaman untuk ganjaran.</p></div>
+                    </button>
+                    
+                    <!-- GAME CABARAN TARKIM (SIDE SCROLLER) -->
+                    <button onclick="showSection('mario')" class="bounce-btn md:col-span-2 bg-gradient-to-r from-blue-500 to-indigo-600 p-6 rounded-3xl flex items-center gap-6 shadow-xl relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')] opacity-20"></div>
+                        <div class="w-16 h-16 bg-yellow-400 rounded-2xl flex items-center justify-center text-white text-3xl shadow-inner border-4 border-yellow-200 animate-bounce"><i class="fa-solid fa-flag-checkered"></i></div>
+                        <div class="relative z-10 text-left">
+                            <h3 class="font-heading font-bold text-2xl text-white tracking-widest uppercase">Cabaran TarKiM</h3>
+                            <p class="text-blue-100 text-xs font-bold uppercase tracking-wider mt-1">Misi Pengembaraan: Lompat & Tumbuk Blok Jawapan!</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right absolute right-8 text-white text-2xl group-hover:translate-x-2 transition-transform"></i>
+                    </button>
+                </div>
+                <div class="mt-12 flex flex-wrap justify-center gap-4">
+                    <button onclick="showLeaderboard()" class="px-5 py-3 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-slate-50 transition-colors shadow-sm text-sm flex items-center gap-2"><i class="fa-solid fa-medal text-amber-500"></i> Papan Pendahulu</button>
+                    <button onclick="showFeedbackSection()" class="px-5 py-3 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-slate-50 transition-colors shadow-sm text-sm flex items-center gap-2"><i class="fa-solid fa-comments text-blue-500"></i> Maklum Balas</button>
+                    <button onclick="showQRCode()" class="px-5 py-3 bg-blue-50 border border-blue-200 text-blue-700 font-bold rounded-2xl hover:bg-blue-100 transition-colors shadow-sm text-sm flex items-center gap-2"><i class="fa-solid fa-qrcode"></i> Kod QR</button>
+                    <button onclick="logout()" class="px-5 py-3 bg-rose-50 border border-rose-200 text-rose-600 font-bold rounded-2xl hover:bg-rose-100 transition-colors shadow-sm text-sm flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+                </div>
+            </div>
+
+            <!-- 3. SEKSYEN NOTA INTERAKTIF -->
+            <div id="section-nota" class="hidden w-full max-w-5xl flex flex-col">
+                <div class="flex justify-between items-center mb-4"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-brand-darkSlate">Nota Interaktif</h2></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm flex flex-col"><h4 class="font-bold text-slate-800 mb-2">Formula PTKS</h4><div id="container-nota-1" class="w-full flex-grow bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200 min-h-[360px]"></div></div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm flex flex-col"><h4 class="font-bold text-slate-800 mb-2">Kedudukan Imbuhan</h4><div id="container-nota-2" class="w-full flex-grow bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200 min-h-[360px]"></div></div>
+                </div>
+            </div>
+            
+            <!-- 4. SEKSYEN TEKNIK TARKIM -->
+            <div id="section-teknik" class="hidden w-full max-w-4xl flex flex-col">
+                <div class="flex justify-between items-center mb-6"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-brand-darkSlate">Teknik TarKiM</h2></div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm flex flex-col md:flex-row gap-8 items-center">
+                    <div id="container-teknik-1" class="w-full md:w-1/2 h-[420px] bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200"></div>
+                    <div class="w-full md:w-1/2 space-y-4 text-left">
+                        <h3 class="font-heading font-bold text-2xl text-brand-darkSlate mb-4">Bagaimana TarKiM Berfungsi?</h3>
+                        <div class="flex gap-4 items-start"><div class="w-6 h-6 bg-brand-softMint rounded-full flex items-center justify-center text-brand-mint font-bold shrink-0 text-xs mt-0.5">1</div><p class="text-slate-600 font-semibold text-sm">Lihat Kolam Pilihan Perkataan di bawah dan pilih mana-mana perkataan yang diinginkan.</p></div>
+                        <div class="flex gap-4 items-start"><div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold shrink-0 text-xs mt-0.5">2</div><p class="text-slate-600 font-semibold text-sm">Seret perkataan tersebut ke dalam kotak yang disediakan.</p></div>
+                        <div class="flex gap-4 items-start"><div class="w-6 h-6 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-bold shrink-0 text-xs mt-0.5">3</div><p class="text-slate-600 font-semibold text-sm">Kemudian, tuliskan pada tiga kotak yang disediakan di sebelah atasnya. Kotak sebelah kiri dan kanan merujuk kepada imbuhan, manakala kotak bahagian tengah merujuk kepada kata dasar.</p></div>
+                        <div class="flex gap-4 items-start"><div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold shrink-0 text-xs mt-0.5">4</div><p class="text-slate-600 font-semibold text-sm">Apabila selesai, pilih kategori imbuhan berpandukan teknik TarKiM yang telah dipelajari.</p></div>
+                        <div class="flex gap-4 items-start"><div class="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-bold shrink-0 text-xs mt-0.5">5</div><p class="text-slate-600 font-semibold text-sm">Sahkan jawapan anda dan anda akan diberi maklum balas.</p></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 5. SEKSYEN VIDEO PEMBELAJARAN -->
+            <div id="section-video" class="hidden w-full max-w-4xl flex flex-col">
+                <div class="flex justify-between items-center mb-6"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-brand-darkSlate">Video Pembelajaran</h2></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm"><div class="w-full aspect-video bg-slate-900 rounded-xl overflow-hidden flex items-center justify-center"><iframe id="video-frame" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe></div></div>
+            </div>
+            
+            <!-- 6. SEKSYEN PERMAINAN INTERAKTIF -->
+            <div id="section-permainan" class="hidden w-full max-w-4xl flex flex-col">
+                <div id="permainan-main-header" class="flex justify-between items-center mb-6 w-full"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-brand-darkSlate">Latihan Pengukuhan</h2></div>
+                <div id="level-selection" class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                    <button onclick="startLevel(1)" class="bounce-btn bg-white hover:border-emerald-500 border-2 border-slate-100 p-8 rounded-2xl flex flex-col items-center text-center shadow-sm"><div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mb-4"><i class="fa-solid fa-seedling"></i></div><h3 class="font-heading font-bold text-xl mb-2">Tahap 1</h3><p class="text-xs font-bold text-emerald-600 uppercase mb-2">Rendah</p></button>
+                    <button onclick="startLevel(2)" class="bounce-btn bg-white hover:border-amber-500 border-2 border-slate-100 p-8 rounded-2xl flex flex-col items-center text-center shadow-sm"><div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-3xl mb-4"><i class="fa-solid fa-tree"></i></div><h3 class="font-heading font-bold text-xl mb-2">Tahap 2</h3><p class="text-xs font-bold text-amber-600 uppercase mb-2">Sederhana</p></button>
+                    <button onclick="startLevel(3)" class="bounce-btn bg-white hover:border-indigo-500 border-2 border-slate-100 p-8 rounded-2xl flex flex-col items-center text-center shadow-sm"><div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-3xl mb-4"><i class="fa-solid fa-mountain"></i></div><h3 class="font-heading font-bold text-xl mb-2">Tahap 3</h3><p class="text-xs font-bold text-indigo-600 uppercase mb-2">Tinggi</p></button>
+                </div>
+                <!-- GAMEPLAY AREA T1 & T2 -->
+                <div id="gameplay-area" class="hidden w-full bg-white rounded-2xl p-6 shadow-md flex flex-col items-center relative">
+                    <div class="flex justify-between items-center w-full mb-4"><button onclick="exitGameplayToMenu()" class="text-emerald-700 bg-emerald-50 px-4 py-2 rounded-xl font-bold text-sm bounce-btn"><i class="fa-solid fa-arrow-left"></i> Pilihan Tahap</button><span id="active-level-label" class="text-sm font-bold text-brand-mint">Tahap 1</span></div>
+                    <div class="w-full flex justify-between items-center mb-4 text-xs font-bold text-slate-500 uppercase"><span id="game-step-counter">Latihan 1 / 5</span><div class="w-1/2 bg-slate-100 h-2.5 rounded-full"><div id="game-progress-bar" class="bg-brand-mint h-full transition-all" style="width:20%;"></div></div></div>
+                    <div class="grid grid-cols-3 gap-4 w-full mb-6 relative">
+                        <div class="flex flex-col items-center p-4 bg-blue-50/50 rounded-2xl border border-blue-100"><span class="text-xs font-bold text-blue-600 mb-2">KIRI</span><input type="text" id="input-imbuhan-kiri" class="w-full p-2 rounded-xl border-2 font-bold text-center uppercase"></div>
+                        <div class="flex flex-col items-center p-4 bg-slate-50 border-2 border-dashed rounded-2xl"><span class="text-xs font-bold text-slate-500 mb-2">TENGAH</span><input type="text" id="input-kata-dasar-tengah" class="w-full p-2 rounded-xl border-2 font-bold text-center uppercase"></div>
+                        <div class="flex flex-col items-center p-4 bg-pink-50/50 rounded-2xl border border-pink-100"><span class="text-xs font-bold text-pink-600 mb-2">KANAN</span><input type="text" id="input-imbuhan-kanan" class="w-full p-2 rounded-xl border-2 font-bold text-center uppercase"></div>
+                    </div>
+                    <div class="w-full bg-slate-50 rounded-xl p-4 mb-6">
+                        <div class="grid grid-cols-4 gap-2">
+                            <button onclick="selectAffixCategory('Imbuhan Awalan')" id="btn-cat-awalan" class="py-3 bg-white border-2 rounded-xl font-bold text-sm bounce-btn">Awalan</button>
+                            <button onclick="selectAffixCategory('Imbuhan Akhiran')" id="btn-cat-akhiran" class="py-3 bg-white border-2 rounded-xl font-bold text-sm bounce-btn">Akhiran</button>
+                            <button onclick="selectAffixCategory('Imbuhan Apitan')" id="btn-cat-apitan" class="py-3 bg-white border-2 rounded-xl font-bold text-sm bounce-btn">Apitan</button>
+                            <button onclick="selectAffixCategory('Imbuhan Sisipan')" id="btn-cat-sisipan" class="py-3 bg-white border-2 rounded-xl font-bold text-sm bounce-btn">Sisipan</button>
+                        </div>
+                    </div>
+                    <div id="drag-target-zone" class="w-full max-w-lg border-4 border-dashed border-emerald-300 bg-emerald-50/40 rounded-2xl p-6 mb-6 flex flex-col items-center justify-center min-h-[90px] cursor-pointer" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
+                        <div id="drag-placeholder-text" class="text-slate-400 font-bold text-sm"><i class="fa-solid fa-hand-pointer text-emerald-500 animate-bounce text-xl"></i> Heret perkataan ke sini</div>
+                        <div id="active-dragged-word" class="hidden text-3xl font-heading font-bold text-emerald-600"></div>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-xl p-4 mb-6 border border-slate-200"><div id="draggable-options-pool" class="flex flex-wrap gap-2 justify-center max-h-[150px] overflow-y-auto"></div></div>
+                    <div class="flex gap-4"><button onclick="resetGameplayInput()" class="px-6 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl bounce-btn">Padam</button><button onclick="verifyDeconstruction()" class="px-8 py-3 bg-brand-mint text-white font-bold rounded-xl shadow-lg hover:bg-emerald-600 bounce-btn">Sahkan Jawapan</button></div>
+                </div>
+                <!-- GAMEPLAY AREA T3 -->
+                <div id="gameplay-area-level3" class="hidden w-full bg-white rounded-2xl p-6 shadow-md flex flex-col items-center">
+                    <div class="w-full flex justify-between items-center mb-4"><button onclick="exitGameplayToMenu()" class="text-indigo-700 bg-indigo-50 px-4 py-2 rounded-xl font-bold text-sm bounce-btn"><i class="fa-solid fa-arrow-left"></i> Pilihan Tahap</button><div id="passage-navigator-buttons" class="flex gap-2"></div></div>
+                    <div id="interactive-text-box" class="w-full bg-slate-50 p-6 rounded-2xl border border-slate-200 text-lg leading-relaxed mb-6 text-left"></div>
+                    <div id="level3-classification-section" class="hidden w-full border-t pt-4"><div class="overflow-y-auto max-h-[220px] space-y-3" id="level3-classification-list"></div></div>
+                    <button id="btn-level3-action" onclick="proceedToClassification()" class="px-8 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg mt-4 bounce-btn">Kategorikan</button>
+                </div>
+            </div>
+
+            <!-- 7. SEKSYEN KUIZ FORMATIF -->
+            <div id="section-kuiz" class="hidden w-full max-w-3xl flex flex-col my-auto">
+                <div class="flex justify-between items-center mb-6"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-brand-darkSlate">Kuiz Formatif TarKiM</h2></div>
+                <div class="bg-white rounded-2xl p-8 shadow-md flex flex-col items-center">
+                    <div class="w-full flex justify-between text-xs font-bold text-slate-400 uppercase mb-4"><span id="quiz-question-num">Soalan 1 / 6</span></div>
+                    <div id="quiz-question-text" class="text-xl font-bold text-slate-800 text-center mb-8 min-h-[60px]"></div>
+                    <div id="quiz-options-container" class="grid grid-cols-2 gap-4 w-full mb-8"></div>
+                    <button id="quiz-next-btn" onclick="nextQuizQuestion()" disabled class="px-8 py-4 bg-brand-mint text-white font-bold rounded-xl shadow-lg disabled:opacity-50 bounce-btn">Seterusnya</button>
+                </div>
+            </div>
+
+            <!-- 8. CABARAN TARKIM (MARIO SIDE SCROLLING) -->
+            <div id="section-mario" class="hidden w-full h-[550px] flex flex-col my-auto relative">
+                <div class="flex justify-between items-center mb-4 z-50">
+                    <button onclick="quitMarioGame()" class="bg-red-500 text-white font-bold px-6 py-3 rounded-xl border-b-4 border-red-700 hover:bg-red-600 bounce-btn text-xs uppercase shadow-lg"><i class="fa-solid fa-door-open"></i> Berhenti</button>
+                    <div class="bg-white/90 backdrop-blur px-8 py-2 rounded-2xl border-4 border-blue-400 shadow-xl">
+                        <span class="text-blue-600 font-heading font-bold text-2xl tracking-widest uppercase">Cabaran TarKiM</span>
+                    </div>
+                    <div class="bg-yellow-400 text-white px-6 py-2 rounded-xl font-pixel text-sm border-b-4 border-yellow-600 shadow-lg"><span id="mario-score-num">0</span> <i class="fa-solid fa-coins"></i></div>
+                </div>
+
+                <div id="game-engine-container" class="game-world-container rounded-3xl border-8 border-white shadow-2xl relative">
+                    <div id="mario-scrolling-layer" class="scrolling-layer">
+                        <div id="mario-decorations">
+                            <i class="fa-solid fa-cloud absolute top-10 left-[200px] text-white opacity-80 text-4xl"></i>
+                            <i class="fa-solid fa-cloud absolute top-24 left-[800px] text-white opacity-60 text-6xl"></i>
+                            <i class="fa-solid fa-cloud absolute top-16 left-[1500px] text-white opacity-70 text-5xl"></i>
+                            <i class="fa-solid fa-cloud absolute top-8 left-[2200px] text-white opacity-90 text-4xl"></i>
+                        </div>
+                        <div id="mario-stations-layer"></div>
+                        <div class="mario-ground"></div>
+                    </div>
+                    
+                    <div id="mario-player" class="player-sprite absolute bottom-[80px] left-[150px] z-[60] text-7xl drop-shadow-2xl">
+                        <i id="mario-avatar-icon" class="fa-solid fa-child-reaching text-blue-600"></i>
+                    </div>
+
+                    <div id="mario-question-popup" class="hidden absolute inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                        <div class="bg-white w-full max-w-2xl rounded-3xl border-8 border-yellow-400 p-6 sm:p-8 shadow-2xl text-center transform transition-all scale-100">
+                            <div class="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-4 border-4 border-yellow-600"><i class="fa-solid fa-question"></i></div>
+                            <p id="mario-q-text" class="text-xl sm:text-2xl font-bold text-slate-800 mb-6 leading-relaxed">Sila gerakkan pemain ke stesen untuk mula!</p>
+                            <div id="mario-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="absolute bottom-[-20px] left-0 right-0 flex justify-center gap-12 z-[110] no-print p-4">
+                    <button onmousedown="startMoving('left')" onmouseup="stopMoving()" onmouseleave="stopMoving()" ontouchstart="startMoving('left')" ontouchend="stopMoving()" class="w-20 h-20 bg-slate-800/90 rounded-full text-white text-4xl border-4 border-slate-600 active:scale-90 transition-transform shadow-xl"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button onmousedown="startMoving('right')" onmouseup="stopMoving()" onmouseleave="stopMoving()" ontouchstart="startMoving('right')" ontouchend="stopMoving()" class="w-20 h-20 bg-slate-800/90 rounded-full text-white text-4xl border-4 border-slate-600 active:scale-90 transition-transform shadow-xl"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- 9. LEADERBOARD -->
+            <div id="section-leaderboard" class="hidden w-full max-w-4xl flex flex-col items-center my-auto">
+                <div class="w-full flex justify-between items-center mb-6"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-amber-500"><i class="fa-solid fa-trophy"></i> Papan Pendahulu</h2></div>
+                <div class="w-full bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 mb-6 shadow-sm flex items-center justify-between">
+                    <div class="flex items-center gap-4"><div class="w-16 h-16 bg-white rounded-full border-4 border-amber-400 flex items-center justify-center text-3xl text-amber-500"><i id="lb-my-avatar" class="fa-solid fa-user"></i></div><div><h3 id="lb-my-name" class="font-bold text-xl text-slate-800">Nama Saya</h3><p id="lb-my-class" class="text-slate-500 text-sm">Kelas</p></div></div>
+                    <div class="text-right"><div class="text-amber-500 font-bold text-3xl"><i class="fa-solid fa-star"></i> <span id="lb-my-stars">0</span></div></div>
+                </div>
+                <div class="w-full bg-white rounded-2xl shadow-md overflow-hidden"><div class="bg-slate-50 px-6 py-3 border-b text-xs font-bold text-slate-400 uppercase flex justify-between"><span>Kedudukan & Nama</span><span>Bintang</span></div><div id="leaderboard-list" class="divide-y max-h-[350px] overflow-y-auto"></div></div>
+            </div>
+
+            <!-- 10. MAKLUM BALAS -->
+            <div id="section-maklumbalas" class="hidden w-full max-w-4xl flex flex-col items-center my-auto">
+                <div class="w-full flex justify-between items-center mb-6">
+                    <button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button>
+                    <h2 class="font-heading font-bold text-2xl text-blue-500"><i class="fa-solid fa-comments"></i> Maklum Balas</h2>
+                </div>
+                <div class="w-full bg-white border border-slate-100 rounded-2xl p-6 mb-6 shadow-sm">
+                    <h3 class="font-bold text-slate-700 mb-3">Tinggalkan Komen Anda:</h3>
+                    <textarea id="input-feedback" rows="3" class="w-full border-2 border-slate-200 rounded-xl p-4 mb-4 focus:border-blue-400 outline-none" placeholder="Apakah pendapat anda tentang aplikasi ini?"></textarea>
+                    <button onclick="submitFeedback()" class="px-6 py-3 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition-colors shadow bounce-btn"><i class="fa-solid fa-paper-plane"></i> Hantar Komen</button>
+                </div>
+                <div class="w-full bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="bg-slate-50 px-6 py-3 border-b text-xs font-bold text-slate-400 uppercase">Komen Terdahulu</div>
+                    <div id="feedback-list" class="divide-y max-h-[300px] overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <!-- 11. ADMIN CMS DENGAN TAMBAHAN MEDIA DAN CETAK PDF ANALISIS -->
+            <div id="section-admin" class="hidden w-full max-w-5xl flex flex-col h-full overflow-hidden">
+                <div class="flex justify-between items-center mb-4"><button onclick="exitAdminView()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-arrow-left"></i> Kembali</button><h2 class="font-heading font-bold text-xl text-brand-darkSlate"><i class="fa-solid fa-screwdriver-wrench text-brand-mint"></i> Admin CMS</h2></div>
+                <div class="flex border-b mb-4 overflow-x-auto"><button onclick="switchAdminTab('scores')" id="btn-tab-scores" class="px-4 py-2 font-bold text-sm border-b-2 border-brand-mint text-brand-mint">Skor</button><button onclick="switchAdminTab('analytics')" id="btn-tab-analytics" class="px-4 py-2 font-bold text-sm border-b-2 border-transparent text-slate-500">Analisis</button><button onclick="switchAdminTab('edit-words')" id="btn-tab-words" class="px-4 py-2 font-bold text-sm border-b-2 border-transparent text-slate-500">Tahap 1&2</button><button onclick="switchAdminTab('edit-passages')" id="btn-tab-passages" class="px-4 py-2 font-bold text-sm border-b-2 border-transparent text-slate-500">Tahap 3</button><button onclick="switchAdminTab('edit-quiz')" id="btn-tab-quiz" class="px-4 py-2 font-bold text-sm border-b-2 border-transparent text-slate-500">Kuiz</button><button onclick="switchAdminTab('media')" id="btn-tab-media" class="px-4 py-2 font-bold text-sm border-b-2 border-transparent text-slate-500">Media</button><button onclick="switchAdminTab('tech-integration')" id="btn-tab-tech" class="px-4 py-2 font-bold text-sm border-b-2 border-transparent text-slate-500">API</button></div>
+                <div class="bg-white rounded-2xl p-6 shadow-md flex-grow overflow-y-auto max-h-[450px]">
+                    
+                    <div id="admin-tab-scores" class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold">Laporan Skor</h3>
+                            <div class="flex gap-2">
+                                <button onclick="printAdminScoresPDF()" class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded font-bold hover:bg-blue-600 shadow flex items-center gap-1"><i class="fa-solid fa-file-pdf"></i> Cetak PDF</button>
+                                <button onclick="clearLocalStorageScores()" class="text-xs bg-red-500 text-white px-3 py-1.5 rounded font-bold hover:bg-red-600 shadow flex items-center gap-1"><i class="fa-solid fa-trash"></i> Padam Rekod</button>
+                            </div>
+                        </div>
+                        <div id="print-scores-area" class="w-full overflow-x-auto bg-white p-4 rounded border border-slate-200">
+                            <h2 id="pdf-score-title" class="hidden text-center font-bold text-xl mb-4 text-brand-darkSlate">Laporan Penuh Skor TarKiM</h2>
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 border-b text-slate-500"><tr><th class="p-2">Nama & Aliran</th><th class="p-2">Kelas</th><th class="p-2">Aktiviti</th><th class="p-2">Skor</th><th class="p-2">Status</th></tr></thead>
+                                <tbody id="table-scores-body" class="divide-y"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div id="admin-tab-analytics" class="hidden space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-brand-darkSlate">Analisis Prestasi: Perdana vs Pendidikan Khas</h3>
+                            <button onclick="printAdminAnalyticsPDF()" class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded font-bold hover:bg-blue-600 shadow flex items-center gap-1"><i class="fa-solid fa-file-pdf"></i> Cetak PDF</button>
+                        </div>
+                        <div id="print-analytics-area" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h2 id="pdf-analytics-title" class="hidden text-center font-bold text-xl mb-4 text-brand-darkSlate">Laporan Analisis Data TarKiM</h2>
+                            <canvas id="performanceChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+
+                    <div id="admin-tab-words" class="hidden grid grid-cols-2 gap-6">
+                        <div class="space-y-3"><select id="admin-word-level" class="w-full border p-2 rounded"><option value="1">Tahap 1</option><option value="2">Tahap 2</option></select><input type="text" id="admin-word-base" placeholder="Kata Dasar" class="w-full border p-2 rounded"><div class="flex gap-2"><input type="text" id="admin-word-prefix" placeholder="Awalan" class="w-full border p-2 rounded"><input type="text" id="admin-word-suffix" placeholder="Akhiran" class="w-full border p-2 rounded"></div><input type="text" id="admin-word-full" placeholder="Kata Lengkap (Cth: melukis)" class="w-full border p-2 rounded"><select id="admin-word-type" class="w-full border p-2 rounded"><option>Imbuhan Awalan</option><option>Imbuhan Akhiran</option><option>Imbuhan Apitan</option><option>Imbuhan Sisipan</option></select><button onclick="saveAdminWord()" class="w-full bg-brand-mint text-white font-bold py-2 rounded">Simpan</button></div>
+                        <div><h3 class="font-bold mb-2">Senarai Aktif</h3><div id="admin-word-list" class="max-h-[300px] overflow-y-auto border p-2 rounded"></div></div>
+                    </div>
+                    <div id="admin-tab-passages" class="hidden grid grid-cols-2 gap-6"><div class="space-y-3"><select id="admin-passage-select" onchange="loadPassageToEditor()" class="w-full border p-2 rounded"><option value="0">Petikan A</option><option value="1">Petikan B</option><option value="2">Petikan C</option></select><input type="text" id="admin-passage-title" class="w-full border p-2 rounded" placeholder="Tajuk"><textarea id="admin-passage-text" rows="4" class="w-full border p-2 rounded"></textarea><button onclick="generatePassageWordTokens()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded">Jana Skema</button></div><div class="space-y-3"><h3 class="font-bold">Skema</h3><div id="admin-passage-tokens-list" class="max-h-[250px] overflow-y-auto border p-2 rounded bg-slate-50 space-y-2 text-xs"></div><button onclick="saveActivePassage()" class="w-full bg-brand-mint text-white font-bold py-2 rounded">Simpan Petikan</button></div></div>
+                    <div id="admin-tab-quiz" class="hidden grid grid-cols-12 gap-6"><div id="admin-quiz-selector-list" class="col-span-4 space-y-2 text-sm max-h-[300px] overflow-y-auto pr-2"></div><div class="col-span-8 space-y-3"><h3 id="admin-quiz-active-q-label" class="font-bold text-brand-mint">Soalan</h3><input type="text" id="admin-quiz-q-text" class="w-full border p-2 rounded font-bold" placeholder="Pernyataan"><input type="text" id="admin-quiz-q-objective" class="w-full border p-2 rounded" placeholder="Objektif"><div class="grid grid-cols-2 gap-2"><input type="text" id="admin-quiz-opt-0" class="border p-2 rounded"><input type="text" id="admin-quiz-opt-1" class="border p-2 rounded"><input type="text" id="admin-quiz-opt-2" class="border p-2 rounded"><input type="text" id="admin-quiz-opt-3" class="border p-2 rounded"></div><select id="admin-quiz-correct-select" class="w-full border p-2 rounded font-bold text-emerald-600"></select><button onclick="saveActiveQuizQuestion()" class="w-full bg-brand-mint text-white font-bold py-3 rounded">Simpan Soalan</button></div></div>
+                    
+                    <div id="admin-tab-media" class="hidden space-y-4">
+                        <p class="text-sm font-bold text-slate-700">Urus Imej & Video (Muat Naik Fail Imej ATAU Masukkan URL)</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="border p-4 rounded bg-slate-50 shadow-sm">
+                                <span class="text-xs font-bold mb-2 block text-brand-darkSlate">Nota 1 (PTKS)</span>
+                                <input type="file" id="media-file-nota1" accept="image/*" onchange="handleMediaFileUpload('media-file-nota1', 'nota1')" class="text-xs w-full mb-2 bg-white border p-1 rounded">
+                                <input type="text" id="media-url-nota1" placeholder="Atau URL Imej Nota 1" onchange="saveMediaUrl('nota1', this.value)" class="w-full border p-2 text-xs rounded focus:border-brand-mint outline-none">
+                            </div>
+                            <div class="border p-4 rounded bg-slate-50 shadow-sm">
+                                <span class="text-xs font-bold mb-2 block text-brand-darkSlate">Nota 2 (Balapan)</span>
+                                <input type="file" id="media-file-nota2" accept="image/*" onchange="handleMediaFileUpload('media-file-nota2', 'nota2')" class="text-xs w-full mb-2 bg-white border p-1 rounded">
+                                <input type="text" id="media-url-nota2" placeholder="Atau URL Imej Nota 2" onchange="saveMediaUrl('nota2', this.value)" class="w-full border p-2 text-xs rounded focus:border-brand-mint outline-none">
+                            </div>
+                            <div class="border p-4 rounded bg-slate-50 shadow-sm">
+                                <span class="text-xs font-bold mb-2 block text-brand-darkSlate">Teknik TarKiM</span>
+                                <input type="file" id="media-file-teknik1" accept="image/*" onchange="handleMediaFileUpload('media-file-teknik1', 'teknik1')" class="text-xs w-full mb-2 bg-white border p-1 rounded">
+                                <input type="text" id="media-url-teknik1" placeholder="Atau URL Imej Teknik" onchange="saveMediaUrl('teknik1', this.value)" class="w-full border p-2 text-xs rounded focus:border-brand-mint outline-none">
+                            </div>
+                            <div class="border p-4 rounded bg-slate-50 shadow-sm">
+                                <span class="text-xs font-bold mb-2 block text-brand-darkSlate">Video YouTube</span>
+                                <input type="text" id="media-url-video" placeholder="Masukkan URL YouTube penuh" onchange="saveVideoLink(this.value)" class="w-full border p-2 text-sm rounded mt-6 focus:border-brand-mint outline-none">
+                            </div>
+                        </div>
+                        <button onclick="resetMediaDefaults()" class="w-full bg-red-500 hover:bg-red-600 text-white text-sm py-3 rounded-xl font-bold shadow transition">Padam Semua Media (Kembali ke Infografik Asal)</button>
+                    </div>
+
+                    <div id="admin-tab-tech" class="hidden space-y-4"><input type="text" id="admin-api-url" placeholder="Google Sheets API URL" class="w-full border p-2 rounded"><div class="flex justify-between mt-2"><span class="font-bold text-xs">Kod Apps Script</span><button onclick="copyAppsScriptCode()" class="text-xs text-brand-mint font-bold">Salin</button></div><textarea id="apps-script-textarea" readonly class="w-full h-32 bg-slate-900 text-emerald-400 font-mono text-[10px] p-2 rounded">function doPost(e){var s=SpreadsheetApp.getActiveSpreadsheet().getActiveSheet(),p=JSON.parse(e.postData.contents);s.appendRow([new Date(),p.name,p.class,p.sekolah,p.aliran,p.activity,p.score,p.status]);return ContentService.createTextOutput(JSON.stringify({"result":"success"})).setMimeType(ContentService.MimeType.JSON);}function doGet(){return ContentService.createTextOutput(JSON.stringify({"result":"alive"})).setMimeType(ContentService.MimeType.JSON);}</textarea><button onclick="testSheetsAPI()" class="bg-blue-500 text-white font-bold py-2 px-4 rounded shadow mt-2">Uji Sambungan API</button></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // 1. DATA DATABASE KEKAL PENUH
+        let isAudioPlaying = false; 
+        let currentUser = { name: '', class: '', sekolah: '', aliran: '', avatar: 'fa-robot', stars: 0 }; 
+        let starsCollected = 0; 
+        let currentSessionLog = []; 
+        let selectedAvatar = 'fa-robot';
+        const avatarIcons = ['fa-robot', 'fa-user-ninja', 'fa-user-astronaut', 'fa-cat', 'fa-dragon', 'fa-ghost'];
+        
+<script>
+        // 1. KONFIGURASI FIREBASE TARKIM
+        const firebaseConfig = {
+            apiKey: "AIzaSyBq3UGZ4q0L9avre3ejYZ856MXftj4VMMc",
+            authDomain: "tarkimrevolusibahasa.firebaseapp.com",
+            databaseURL: "https://tarkimrevolusibahasa-default-rtdb.firebaseio.com",
+            projectId: "tarkimrevolusibahasa",
+            storageBucket: "tarkimrevolusibahasa.firebasestorage.app",
+            messagingSenderId: "66625781675",
+            appId: "1:66625781675:web:35c7dc754f6a33fbb01cee"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 2. DATA DATABASE UTAMA
+        let isAudioPlaying = false; 
+        let currentUser = { name: '', class: '', sekolah: '', aliran: '', avatar: 'fa-robot', stars: 0 }; 
+        let starsCollected = 0; 
+        let currentSessionLog = []; 
+        let selectedAvatar = 'fa-robot';
+        const avatarIcons = ['fa-robot', 'fa-user-ninja', 'fa-user-astronaut', 'fa-cat', 'fa-dragon', 'fa-ghost'];
+
+        // Kosongkan array ini kerana data akan ditarik dari Firebase
+        let scoresDatabase = [];
+        let usersProfileDatabase = {};
+        
+        // Kekalkan ini dalam localStorage supaya mudah diedit dari peranti tempatan
+        let feedbacksDatabase = JSON.parse(localStorage.getItem('tarkim_feedback_v17')) || [];
+        let mediaDatabase = JSON.parse(localStorage.getItem('tarkim_media_v17')) || { nota1: 'interactive_template', nota2: 'interactive_template', teknik1: 'interactive_template', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' };
+
+        // --- TARIK DATA SECARA LIVE (REAL-TIME) DARI FIREBASE ---
+        db.ref('tarkim/users').on('value', (snapshot) => {
+            if(snapshot.exists()) {
+                usersProfileDatabase = snapshot.val();
+                if(document.getElementById('section-leaderboard').classList.contains('hidden') === false) {
+                    showLeaderboard(); // Segar semula leaderboard secara automatik
+                }
+            }
+        });
+
+        db.ref('tarkim/scores').on('value', (snapshot) => {
+            if(snapshot.exists()) {
+                scoresDatabase = Object.values(snapshot.val());
+                if(document.getElementById('admin-tab-scores') && !document.getElementById('admin-tab-scores').classList.contains('hidden')) {
+                    loadAdminScoresTable(); // Segar semula jadual admin
+                }
+            }
+        });
+        
+        // Mulakan Kata Dasar (Kekal ikut fail asal)
+        let wordsDatabase = JSON.parse(localStorage.getItem('tarkim_words_v17')) || {
+            // ... (biarkan sahaja data wordsDatabase, passagesDatabase, dan quizDatabase yang panjang itu di sini seperti asal) ...        
+let mediaDatabase = JSON.parse(localStorage.getItem('tarkim_media_v17')) || { nota1: 'interactive_template', nota2: 'interactive_template', teknik1: 'interactive_template', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' };
+        let feedbacksDatabase = JSON.parse(localStorage.getItem('tarkim_feedback_v17')) || [];
+        
+        let wordsDatabase = JSON.parse(localStorage.getItem('tarkim_words_v17')) || {
+            1: [{id:1,base:'lukis',prefix:'me-',suffix:'',full:'melukis',type:'Imbuhan Awalan'},{id:2,base:'kerja',prefix:'be-',suffix:'',full:'bekerja',type:'Imbuhan Awalan'},{id:3,base:'jatuh',prefix:'ter-',suffix:'',full:'terjatuh',type:'Imbuhan Awalan'},{id:4,base:'baca',prefix:'',suffix:'-an',full:'bacaan',type:'Imbuhan Akhiran'},{id:5,base:'kemas',prefix:'',suffix:'-kan',full:'kemaskan',type:'Imbuhan Akhiran'},{id:6,base:'tani',prefix:'per-',suffix:'-an',full:'pertanian',type:'Imbuhan Apitan'},{id:7,base:'jalan',prefix:'per-',suffix:'-an',full:'perjalanan',type:'Imbuhan Apitan'},{id:8,base:'turut',prefix:'',suffix:'-i',full:'turuti',type:'Imbuhan Akhiran'},{id:9,base:'baca',prefix:'mem-',suffix:'',full:'membaca',type:'Imbuhan Awalan'},{id:10,base:'jalan',prefix:'ber-',suffix:'',full:'berjalan',type:'Imbuhan Awalan'},{id:11,base:'lukis',prefix:'',suffix:'-an',full:'lukisan',type:'Imbuhan Akhiran'},{id:12,base:'jalan',prefix:'',suffix:'-an',full:'jalanan',type:'Imbuhan Akhiran'},{id:13,base:'kerja',prefix:'pe-',suffix:'-an',full:'pekerjaan',type:'Imbuhan Apitan'},{id:14,base:'rupa',prefix:'me-',suffix:'-kan',full:'merupakan',type:'Imbuhan Apitan'},{id:15,base:'baca',prefix:'di-',suffix:'-kan',full:'dibacakan',type:'Imbuhan Apitan'},{id:16,base:'beritahu',prefix:'mem-',suffix:'',full:'memberitahu',type:'Imbuhan Awalan'},{id:17,base:'surih',prefix:'',suffix:'-kan',full:'surihkan',type:'Imbuhan Akhiran'}],
+            2: [{id:101,base:'sambung',prefix:'-in-',suffix:'',full:'sinambung',type:'Imbuhan Sisipan'},{id:102,base:'serak',prefix:'-el-',suffix:'',full:'selerak',type:'Imbuhan Sisipan'},{id:103,base:'kuncup',prefix:'-em-',suffix:'',full:'kemuncup',type:'Imbuhan Sisipan'},{id:104,base:'sabut',prefix:'-er-',suffix:'',full:'serabut',type:'Imbuhan Sisipan'},{id:105,base:'serbak',prefix:'-em-',suffix:'',full:'semerbak',type:'Imbuhan Sisipan'},{id:106,base:'tapak',prefix:'-el-',suffix:'',full:'telapak',type:'Imbuhan Sisipan'},{id:107,base:'tulis',prefix:'pe-',suffix:'-an',full:'penulisan',type:'Imbuhan Apitan'},{id:108,base:'sayang',prefix:'me-',suffix:'-i',full:'menyayangi',type:'Imbuhan Apitan'},{id:109,base:'periksa',prefix:'pe-',suffix:'-an',full:'pemeriksaan',type:'Imbuhan Apitan'},{id:110,base:'gilang',prefix:'-em-',suffix:'',full:'gemilang',type:'Imbuhan Sisipan'},{id:111,base:'suling',prefix:'-er-',suffix:'',full:'seruling',type:'Imbuhan Sisipan'},{id:112,base:'jujur',prefix:'-el-',suffix:'',full:'jelujur',type:'Imbuhan Sisipan'},{id:113,base:'kemas',prefix:'me-',suffix:'',full:'mengemas',type:'Imbuhan Awalan'},{id:114,base:'kawal',prefix:'me-',suffix:'',full:'mengawal',type:'Imbuhan Awalan'},{id:115,base:'kira',prefix:'me-',suffix:'',full:'mengira',type:'Imbuhan Awalan'},{id:116,base:'tutup',prefix:'pe-',suffix:'-an',full:'penutupan',type:'Imbuhan Apitan'},{id:117,base:'kunjung',prefix:'me-',suffix:'-i',full:'mengunjungi',type:'Imbuhan Apitan'}]
+        };
+        let passagesDatabase = JSON.parse(localStorage.getItem('tarkim_passages_v17')) || [
+            { title:"Petikan A", text:"Amirul melawat kawasan pertanian pak ciknya. Pekerjaan itu sangat menyeronokkan untuk perjalanan ke bandar.", answers:[{word:"melawat",type:"Imbuhan Awalan"},{word:"pertanian",type:"Imbuhan Apitan"},{word:"Pekerjaan",type:"Imbuhan Apitan"},{word:"menyeronokkan",type:"Imbuhan Apitan"},{word:"perjalanan",type:"Imbuhan Apitan"}] },
+            { title:"Petikan B", text:"Kami membaca buku di perpustakaan. Lukisan digantung berkilauan.", answers:[{word:"membaca",type:"Imbuhan Awalan"},{word:"perpustakaan",type:"Imbuhan Apitan"},{word:"Lukisan",type:"Imbuhan Akhiran"},{word:"digantung",type:"Imbuhan Awalan"},{word:"berkilauan",type:"Imbuhan Apitan"}] },
+            { title:"Petikan C", text:"Seruling bertiup dari telapak bukit. Selerak daun gemilang.", answers:[{word:"Seruling",type:"Imbuhan Sisipan"},{word:"bertiup",type:"Imbuhan Awalan"},{word:"telapak",type:"Imbuhan Sisipan"},{word:"Selerak",type:"Imbuhan Sisipan"},{word:"gemilang",type:"Imbuhan Sisipan"}] }
+        ];
+        let quizDatabase = JSON.parse(localStorage.getItem('tarkim_quiz_v17')) || [
+            {q:"Perkataan yang mengandungi IMBUHAN AWALAN?", options:["bacaan","melukis","perjalanan","telapak"], correct:"melukis", objective:"Tatabahasa"},
+            {q:"Perkataan yang menggunakan IMBUHAN SISIPAN?", options:["kemaskan","selerak","terjatuh","perjalanan"], correct:"selerak", objective:"Tatabahasa"},
+            {q:"Apakah jenis imbuhan bagi 'pemeriksaan'?", options:["Awalan","Akhiran","Apitan","Sisipan"], correct:"Apitan", objective:"Tatabahasa"},
+            {q:"Kata dasar asal bagi 'menyayangi'?", options:["nyanyi","sayang","ayang","syg"], correct:"sayang", objective:"Kata Dasar"},
+            {q:"Kata dasar bagi 'pekerjaan'?", options:["kerja","kerjaya","kejar","raja"], correct:"kerja", objective:"Kata Dasar"},
+            {q:"Kata dasar bagi kata bersisip 'telapak'?", options:["tapak","lapak","telap","pak"], correct:"tapak", objective:"Kata Dasar"}
+        ];
+        let googleSheetsApiUrl = localStorage.getItem('tarkim_api_url') || '';
+
+        // 2. UTILITI WOW EFFECT & AUDIO
+        function triggerConfetti() { confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); }
+        function triggerWrongEffect() { 
+            const b = document.getElementById('main-body'); const o = document.getElementById('wrong-flash-overlay');
+            b.classList.add('animate-shake'); o.classList.remove('hidden'); o.classList.add('animate-flash-red');
+            setTimeout(() => { b.classList.remove('animate-shake'); o.classList.add('hidden'); o.classList.remove('animate-flash-red'); }, 500);
+        }
+
+function updateStarsDisplay() { 
+    const starEl = document.getElementById('star-count');
+    if(starEl) starEl.innerText = `${Math.floor(starsCollected)} Bintang`; 
+    
+    if (currentUser && currentUser.name) { 
+        const uid = `${currentUser.name}_${currentUser.class}`; 
+        if(usersProfileDatabase[uid]) {
+            usersProfileDatabase[uid].stars = starsCollected; 
+            // Ini arahan baharu Firebase
+            db.ref('tarkim/users/' + uid).update({ stars: starsCollected }); 
+        }
+    } 
+}
+        function toggleAudio() { const bgm = document.getElementById('bgm-audio'); const btn = document.getElementById('btn-audio-toggle'); if(!bgm || !btn) return; if(isAudioPlaying) { bgm.pause(); isAudioPlaying = false; btn.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`; } else { bgm.play().catch(e=>{}); isAudioPlaying = true; btn.innerHTML = `<i class="fa-solid fa-music"></i>`; } }
+        function playSfx(type) { try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); if (type === 'success' || type === 'coin') { o.type='sine'; o.frequency.setValueAtTime(987.77, ctx.currentTime); o.frequency.setValueAtTime(1318.51, ctx.currentTime + 0.1); g.gain.setValueAtTime(0.1, ctx.currentTime); o.start(); o.stop(ctx.currentTime + 0.3); } else if (type === 'fail' || type === 'bonk') { o.type='square'; o.frequency.setValueAtTime(150, ctx.currentTime); o.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.2); g.gain.setValueAtTime(0.1, ctx.currentTime); o.start(); o.stop(ctx.currentTime + 0.2); } else if (type === 'jump') { o.type='triangle'; o.frequency.setValueAtTime(400, ctx.currentTime); o.frequency.linearRampToValueAtTime(800, ctx.currentTime + 0.1); g.gain.setValueAtTime(0.05, ctx.currentTime); o.start(); o.stop(ctx.currentTime + 0.15); } } catch(e){} }
+        
+        function resetSessionLog() { currentSessionLog = []; }
+        function showReportAndPrint(activityName, score) {
+            document.getElementById('app-canvas').classList.add('hidden'); document.getElementById('print-report-section').classList.remove('hidden');
+            document.getElementById('report-date').innerText = new Date().toLocaleDateString('ms-MY'); 
+            document.getElementById('report-name').innerText = currentUser.name; 
+            document.getElementById('report-class').innerText = currentUser.class; 
+            document.getElementById('report-sekolah').innerText = currentUser.sekolah || 'Tidak Dinyatakan'; 
+            document.getElementById('report-aliran').innerText = currentUser.aliran || 'Tiada'; 
+            document.getElementById('report-activity').innerText = activityName; document.getElementById('report-score').innerText = score;
+            const tbody = document.getElementById('report-table-body'); tbody.innerHTML = '';
+            currentSessionLog.forEach((log) => { const icon = log.isCorrect ? '<span class="text-emerald-500 font-bold">Betul</span>' : '<span class="text-red-500 font-bold">Salah</span>'; tbody.innerHTML += `<tr><td class="p-3 font-semibold">${log.item}</td><td class="p-3 ${log.isCorrect?'text-emerald-600':'text-red-500'}">${log.user}</td><td class="p-3 text-slate-600">${log.correct}</td><td class="p-3 text-center">${icon}</td></tr>`; });
+        }
+        function downloadPDF() { const btn = document.getElementById('report-buttons'); btn.classList.add('hidden'); const el = document.getElementById('report-content-wrapper'); const opt = { margin:0.3, filename:`Laporan_TarKiM_${currentUser.name}.pdf`, image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2, useCORS:true}, jsPDF:{unit:'in',format:'a4',orientation:'portrait'} }; html2pdf().set(opt).from(el).save().then(()=>{ btn.classList.remove('hidden'); Swal.fire('Berjaya!','PDF dimuat turun.','success'); }); }
+        function closeReport() { document.getElementById('print-report-section').classList.add('hidden'); document.getElementById('app-canvas').classList.remove('hidden'); showScreen('screen-menu'); }
+
+        // FUNGSI CETAK PDF ADMIN
+        function printAdminScoresPDF() {
+            document.getElementById('pdf-score-title').classList.remove('hidden');
+            const el = document.getElementById('print-scores-area');
+            const opt = { margin:0.5, filename:`Laporan_Skor_TarKiM.pdf`, image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2, useCORS:true}, jsPDF:{unit:'in',format:'a4',orientation:'portrait'} }; 
+            html2pdf().set(opt).from(el).save().then(()=>{ 
+                document.getElementById('pdf-score-title').classList.add('hidden');
+                Swal.fire('Berjaya!','PDF Laporan Skor dimuat turun.','success'); 
+            });
+        }
+
+        function printAdminAnalyticsPDF() {
+            document.getElementById('pdf-analytics-title').classList.remove('hidden');
+            const el = document.getElementById('print-analytics-area');
+            const opt = { margin:0.5, filename:`Analisis_Data_TarKiM.pdf`, image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2, useCORS:true}, jsPDF:{unit:'in',format:'a4',orientation:'landscape'} }; 
+            html2pdf().set(opt).from(el).save().then(()=>{ 
+                document.getElementById('pdf-analytics-title').classList.add('hidden');
+                Swal.fire('Berjaya!','PDF Analisis Data dimuat turun.','success'); 
+            });
+        }
+
+        // 3. INIT & LOGIN
+        window.onload = function() { renderAvatarSelection(); applyMediaSettings(); };
+        function renderAvatarSelection() { const c = document.getElementById('avatar-selection-container'); c.innerHTML = ''; avatarIcons.forEach(icon => { const b = document.createElement('div'); b.className = `w-12 h-12 rounded-xl flex items-center justify-center text-2xl cursor-pointer transition-all ${icon === selectedAvatar ? 'bg-brand-mint text-white shadow-lg border-2 border-emerald-600 scale-110' : 'bg-slate-100 text-slate-400'}`; b.innerHTML = `<i class="fa-solid ${icon}"></i>`; b.onclick = () => { selectedAvatar = icon; renderAvatarSelection(); playSfx('success'); }; c.appendChild(b); }); }
+        function handleLogin() { 
+            const name = document.getElementById('input-name').value.trim(); const cls = document.getElementById('input-class').value.trim(); const sek = document.getElementById('input-sekolah').value.trim(); const alr = document.getElementById('input-aliran').value;
+            if (!name || !cls || !sek || !alr) { Swal.fire('Opps!', 'Sila lengkapkan semua maklumat (Nama, Kelas, Sekolah, Aliran).', 'warning'); playSfx('fail'); return; } 
+            
+            const userId = `${name}_${cls}`; 
+            if (!usersProfileDatabase[userId]) { usersProfileDatabase[userId] = { name: name, class: cls, sekolah: sek, aliran: alr, avatar: selectedAvatar, stars: 0 }; } 
+            else { usersProfileDatabase[userId].avatar = selectedAvatar; usersProfileDatabase[userId].sekolah = sek; usersProfileDatabase[userId].aliran = alr; } 
+            localStorage.setItem('tarkim_users_v17', JSON.stringify(usersProfileDatabase)); 
+            
+            currentUser = usersProfileDatabase[userId]; 
+            starsCollected = currentUser.stars || 0; 
+            
+            document.getElementById('header-user-info').innerText = `${name} (${cls})`; 
+            document.getElementById('header-avatar-icon').className = `fa-solid ${selectedAvatar} text-brand-mint`; 
+            document.getElementById('app-header').classList.remove('hidden');
+            
+            updateStarsDisplay(); 
+            if(!isAudioPlaying) toggleAudio(); 
+            playSfx('success'); 
+            showScreen('screen-menu'); 
+        }
+        function logout() { currentUser = { name:'', class:'', sekolah:'', aliran:'', avatar:'', stars:0 }; if(isAudioPlaying) toggleAudio(); document.getElementById('app-header').classList.add('hidden'); showScreen('screen-login'); }
+
+        // 4. SCREEN NAVIGATION
+        function showScreen(id) { ['screen-login','screen-menu','section-nota','section-teknik','section-video','section-permainan','section-kuiz','section-mario','section-admin','section-leaderboard','section-maklumbalas'].forEach(s => { const el = document.getElementById(s); if(el) el.classList.add('hidden'); }); const target = document.getElementById(id); if(target) target.classList.remove('hidden'); }
+        function showSection(s) { if(s==='kuiz') { showScreen('section-kuiz'); startQuiz(); } else if (s==='mario') { showScreen('section-mario'); startMarioGame(); } else { showScreen(`section-${s}`); if(s==='permainan'){ document.getElementById('permainan-main-header').classList.remove('hidden'); document.getElementById('level-selection').classList.remove('hidden'); document.getElementById('gameplay-area').classList.add('hidden'); document.getElementById('gameplay-area-level3').classList.add('hidden'); } } }
+        function goBackToMenu() { showScreen('screen-menu'); }
+        function exitGameplayToMenu() { document.getElementById('gameplay-area').classList.add('hidden'); document.getElementById('gameplay-area-level3').classList.add('hidden'); document.getElementById('level-selection').classList.remove('hidden'); document.getElementById('permainan-main-header').classList.remove('hidden'); }
+
+        function showLeaderboardFromLogin() { showLeaderboard(); }
+        function showLeaderboard() { showScreen('section-leaderboard'); document.getElementById('lb-my-avatar').className = `fa-solid ${currentUser.avatar || 'fa-user'}`; document.getElementById('lb-my-name').innerText = currentUser.name || "Log Masuk"; document.getElementById('lb-my-stars').innerText = Math.floor(starsCollected); const list = document.getElementById('leaderboard-list'); list.innerHTML=''; Object.values(usersProfileDatabase).filter(u=>u.name).sort((a,b)=>(b.stars||0)-(a.stars||0)).forEach((u,i)=>{ list.innerHTML += `<div class="p-4 flex justify-between items-center border-b"><div class="flex items-center gap-3"><span class="font-bold text-slate-400 w-6">#${i+1}</span><div class="w-10 h-10 rounded-full border flex items-center justify-center bg-white"><i class="fa-solid ${u.avatar}"></i></div><div><div class="font-bold">${u.name}</div><div class="text-[10px]">${u.class}</div></div></div><div class="font-bold text-amber-500">${Math.floor(u.stars||0)} ⭐</div></div>`; }); }
+        function showQRCode() { let u = window.location.href.split('#')[0]; if(u.includes('blob:')) u = 'https://cikguam.github.io/tarkim/'; Swal.fire({title:'Imbas QR', imageUrl:`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(u)}&margin=10`}); }
+        
+        // MAKLUM BALAS
+        function showFeedbackSection() { showScreen('section-maklumbalas'); renderFeedbacks(); }
+        function submitFeedback() {
+            const f = document.getElementById('input-feedback').value.trim();
+            if(!f) return Swal.fire('Opps', 'Tulis maklum balas dahulu', 'warning');
+            feedbacksDatabase.push({ name: currentUser.name, avatar: currentUser.avatar, comment: f, time: new Date().toLocaleDateString('ms-MY') });
+            localStorage.setItem('tarkim_feedback_v17', JSON.stringify(feedbacksDatabase));
+            document.getElementById('input-feedback').value = ''; playSfx('success'); triggerConfetti();
+            renderFeedbacks(); Swal.fire('Berjaya', 'Maklum balas dihantar!', 'success');
+        }
+        function renderFeedbacks() {
+            const list = document.getElementById('feedback-list'); list.innerHTML = '';
+            [...feedbacksDatabase].reverse().forEach(fb => { list.innerHTML += `<div class="p-4 flex gap-4 border-b border-slate-100"><div class="w-10 h-10 rounded-full border flex shrink-0 items-center justify-center bg-white"><i class="fa-solid ${fb.avatar || 'fa-user'}"></i></div><div><p class="font-bold text-slate-700">${fb.name} <span class="text-[9px] text-slate-400 ml-2">${fb.time}</span></p><p class="text-sm text-slate-600 mt-1">${fb.comment}</p></div></div>`; });
+        }
+
+        // 5. MEDIA RENDER
+        function applyMediaSettings() { document.getElementById('video-frame').src = formatYoutubeEmbed(mediaDatabase.videoUrl); renderMediaContent(); }
+        function formatYoutubeEmbed(url) { if (!url) return 'https://www.youtube.com/embed/dQw4w9WgXcQ'; if (url.includes('embed')) return url; let vId = url.includes('youtube.com/watch?v=') ? url.split('v=')[1].split('&')[0] : url.includes('youtu.be/') ? url.split('youtu.be/')[1].split('?')[0] : ''; return vId ? `https://www.youtube.com/embed/${vId}` : url; }
+        function renderMediaContent() {
+            const cN1 = document.getElementById('container-nota-1'); if (mediaDatabase.nota1 === 'interactive_template') { cN1.innerHTML = `<div class="w-full h-full flex flex-col justify-center"><div class="grid grid-cols-4 gap-2 mb-4 items-center"><div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-[#C2A385] border-2 border-slate-800 flex items-center justify-center font-bold text-xs"><span class="text-red-600">P</span>ak</div><i class="fa-solid fa-arrow-down my-1 text-slate-400"></i><div class="w-10 h-10 rounded-full bg-[#A5F3FC] border-2 border-slate-800 flex items-center justify-center font-bold text-xs"><span class="text-red-600">M</span>ak</div></div><div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-[#C2A385] border-2 border-slate-800 flex items-center justify-center font-bold text-xs"><span class="text-red-600">T</span>am</div><i class="fa-solid fa-arrow-down my-1 text-slate-400"></i><div class="w-10 h-10 rounded-full bg-[#A5F3FC] border-2 border-slate-800 flex items-center justify-center font-bold text-xs"><span class="text-red-600">N</span>ab</div></div><div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-[#C2A385] border-2 border-slate-800 flex items-center justify-center font-bold text-xs"><span class="text-red-600">K</span>e</div><i class="fa-solid fa-arrow-down my-1 text-slate-400"></i><div class="w-10 h-10 rounded-full bg-[#A5F3FC] border-2 border-slate-800 flex items-center justify-center font-bold text-xs"><span class="text-red-600">Ng</span>a</div></div><div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-[#C2A385] border-2 border-slate-800 flex items-center justify-center font-bold text-xs"><span class="text-red-600">S</span>u</div><i class="fa-solid fa-arrow-down my-1 text-slate-400"></i><div class="w-10 h-10 rounded-full bg-[#A5F3FC] border-2 border-slate-800 flex items-center justify-center font-bold text-xs"><span class="text-red-600">Ny</span>a</div></div></div></div>`; } else { cN1.innerHTML = `<img src="${mediaDatabase.nota1}" class="w-full h-full object-contain">`; }
+            const cN2 = document.getElementById('container-nota-2'); if (mediaDatabase.nota2 === 'interactive_template') { cN2.innerHTML = `<div class="w-full space-y-3 px-2"><div class="track-field h-7 rounded"><div class="track-line"></div><div class="absolute left-4 top-1/2 -translate-y-1/2 text-sm z-10">🏃‍♂️(Awalan)</div></div><div class="track-field h-7 rounded"><div class="track-line"></div><div class="absolute right-4 top-1/2 -translate-y-1/2 text-sm z-10">(Akhiran)🏃‍♂️</div></div><div class="track-field h-7 rounded"><div class="track-line"></div><div class="absolute left-4 top-1/2 -translate-y-1/2 text-sm z-10">🏃‍♂️(Apitan)</div><div class="absolute right-4 top-1/2 -translate-y-1/2 text-sm z-10">🏃‍♂️</div></div><div class="track-field h-7 rounded"><div class="track-line"></div><div class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-sm z-10">🏃‍♂️(Sisipan)</div></div></div>`; } else { cN2.innerHTML = `<img src="${mediaDatabase.nota2}" class="w-full h-full object-contain">`; }
+            const cT1 = document.getElementById('container-teknik-1'); if (mediaDatabase.teknik1 === 'interactive_template') { cT1.innerHTML = `<div class="w-full bg-rose-50 p-4 h-full flex flex-col justify-center space-y-4"><div class="bg-white p-2 rounded shadow"><div class="text-xs font-bold text-rose-700">AWALAN (me-)</div><div class="track-field h-6"><div class="track-line"></div><span class="absolute left-2 top-1/2 -translate-y-1/2">🏃‍♂️</span></div></div><div class="bg-white p-2 rounded shadow"><div class="text-xs font-bold text-blue-700">AKHIRAN (-an)</div><div class="track-field h-6"><div class="track-line"></div><span class="absolute right-2 top-1/2 -translate-y-1/2">🏃‍♂️</span></div></div><div class="bg-white p-2 rounded shadow"><div class="text-xs font-bold text-purple-700">APITAN (pe-...-an)</div><div class="track-field h-6"><div class="track-line"></div><span class="absolute left-2 top-1/2 -translate-y-1/2">🏃‍♂️</span><span class="absolute right-2 top-1/2 -translate-y-1/2">🏃‍♂️</span></div></div><div class="bg-white p-2 rounded shadow"><div class="text-xs font-bold text-amber-700">SISIPAN (-el-)</div><div class="track-field h-6"><div class="track-line"></div><span class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">🏃‍♂️</span></div></div></div>`; } else { cT1.innerHTML = `<img src="${mediaDatabase.teknik1}" class="w-full h-full object-contain">`; }
+        }
+
+        // 6. TAHAP 1 & 2
+        let activeLevel=1; let activeWordIndex=0; let currentTargetWord=null; let selectedCategory=''; let currentLevelWordsList=[]; let usedWordsThisSession=[]; let levelScoreTracker=0;
+        function startLevel(l) { document.getElementById('permainan-main-header').classList.add('hidden'); if(l===3){ document.getElementById('level-selection').classList.add('hidden'); document.getElementById('gameplay-area-level3').classList.remove('hidden'); startLevel3(); return; } activeLevel=l; document.getElementById('active-level-label').innerText=`Tahap ${l}`; document.getElementById('level-selection').classList.add('hidden'); document.getElementById('gameplay-area').classList.remove('hidden'); activeWordIndex=0; levelScoreTracker=0; usedWordsThisSession=[]; currentLevelWordsList=[...wordsDatabase[l]]; resetSessionLog(); initGameplayRound(); }
+        function initGameplayRound() {
+            const m = Math.min(5, currentLevelWordsList.length);
+            if (activeWordIndex >= m) {
+                const rec = { name: currentUser.name, class: currentUser.class, sekolah: currentUser.sekolah, aliran: currentUser.aliran, activity: `Latihan Tahap ${activeLevel}`, score: `${levelScoreTracker}/${m}`, status: (levelScoreTracker>=4)?'Cemerlang':'Bimbingan', time: new Date().toLocaleString() }; scoresDatabase.push(rec); db.ref('tarkim/scores').push().set(rec); if(googleSheetsApiUrl) sendScoreToGoogleSheets(rec); starsCollected+=levelScoreTracker; updateStarsDisplay(); 
+                if(levelScoreTracker >= 4) { triggerConfetti(); playSfx('success'); } else { playSfx('fail'); }
+                Swal.fire({ title: 'Selesai!', html: `<p class="text-lg">Skor: <strong>${levelScoreTracker}/${m}</strong></p>`, icon: 'success', showDenyButton: true, confirmButtonText: 'Kembali', denyButtonText: '<i class="fa-solid fa-file-pdf"></i> Jana PDF' }).then(r=>{ if(r.isDenied) showReportAndPrint(`Latihan Tahap ${activeLevel}`, `${levelScoreTracker}/${m}`); else showSection('permainan'); }); return;
+            }
+            document.getElementById('game-step-counter').innerText = `Latihan ${activeWordIndex + 1} / ${m}`; resetGameplayInput(); renderWordPool();
+        }
+        function renderWordPool() { const pool = document.getElementById('draggable-options-pool'); pool.innerHTML=''; currentLevelWordsList.forEach(w=>{ if(usedWordsThisSession.includes(w.full)) return; const d = document.createElement('div'); d.className="draggable-item px-3 py-2 bg-white border border-slate-300 font-bold rounded shadow-sm text-sm cursor-pointer hover:bg-slate-50"; d.innerText=w.full; d.onclick=()=>selectWordDirectly(w.full); d.setAttribute('draggable','true'); d.ondragstart=(e)=>e.dataTransfer.setData("text/plain", w.full); pool.appendChild(d); }); }
+        function allowDrop(e) { e.preventDefault(); document.getElementById('drag-target-zone').classList.add('bg-emerald-100'); } function dragLeave(e) { document.getElementById('drag-target-zone').classList.remove('bg-emerald-100'); } function handleDrop(e) { e.preventDefault(); document.getElementById('drag-target-zone').classList.remove('bg-emerald-100'); const w = e.dataTransfer.getData("text/plain"); if(w) selectWordDirectly(w); }
+        function selectWordDirectly(w) { currentTargetWord = currentLevelWordsList.find(x=>x.full===w); document.getElementById('active-dragged-word').innerText = w; document.getElementById('active-dragged-word').classList.remove('hidden'); document.getElementById('drag-placeholder-text').classList.add('hidden'); playSfx('success'); }
+        function selectAffixCategory(c) { selectedCategory=c; ['btn-cat-awalan','btn-cat-akhiran','btn-cat-apitan','btn-cat-sisipan'].forEach(id=>{ document.getElementById(id).className=`py-3 px-2 font-bold rounded-xl text-sm bounce-btn border-2 ${document.getElementById(id).innerText.includes(c.split(' ')[1])?'bg-emerald-500 text-white border-brand-mint':'bg-white text-slate-700 border-slate-200'}`; }); }
+        function resetGameplayInput() { document.getElementById('input-imbuhan-kiri').value=''; document.getElementById('input-kata-dasar-tengah').value=''; document.getElementById('input-imbuhan-kanan').value=''; currentTargetWord=null; selectedCategory=''; document.getElementById('active-dragged-word').classList.add('hidden'); document.getElementById('drag-placeholder-text').classList.remove('hidden'); ['btn-cat-awalan','btn-cat-akhiran','btn-cat-apitan','btn-cat-sisipan'].forEach(id=>document.getElementById(id).className="py-3 px-2 bg-white border-2 border-slate-200 font-bold rounded-xl text-sm bounce-btn"); }
+        function verifyDeconstruction() {
+            if(!currentTargetWord) { Swal.fire('','Sila pilih perkataan di kolam bawah dahulu!','warning'); return; }
+            const k = document.getElementById('input-imbuhan-kiri').value.trim().toLowerCase().replace(/-/g, ''); const t = document.getElementById('input-kata-dasar-tengah').value.trim().toLowerCase(); const ka = document.getElementById('input-imbuhan-kanan').value.trim().toLowerCase().replace(/-/g, '');
+            const ck = currentTargetWord.prefix.replace(/-/g, '').toLowerCase(); const ct = currentTargetWord.base.toLowerCase(); const cka = currentTargetWord.suffix.replace(/-/g, '').toLowerCase();
+            const matchK = (k===ck) || (['me','men','mem','meng','meny','pe','pen','pem','peng','peny'].includes(k) && currentTargetWord.full.startsWith(k));
+            const isCorrect = matchK && t===ct && ka===cka && selectedCategory===currentTargetWord.type;
+            const uStr = `${k} + ${t} + ${ka} (${selectedCategory||'Tiada'})`; const cStr = `${ck} + ${ct} + ${cka} (${currentTargetWord.type})`; currentSessionLog.push({item:currentTargetWord.full, user:isCorrect?'Tepat':uStr, correct:isCorrect?'Tepat':cStr, isCorrect:isCorrect}); usedWordsThisSession.push(currentTargetWord.full);
+            if(isCorrect) { triggerConfetti(); levelScoreTracker++; playSfx('success'); Swal.fire('Betul!', '', 'success').then(()=>{ activeWordIndex++; initGameplayRound(); }); } else { triggerWrongEffect(); playSfx('fail'); Swal.fire('Semak', `Jawapan betul:\n${cStr}`, 'info').then(()=>{ activeWordIndex++; initGameplayRound(); }); }
+        }
+
+        // 7. TAHAP 3 PETIKAN
+        let activePassageIndex=0; let selectedL3Words=[]; let isClassificationMode=false;
+        function startLevel3() { activePassageIndex=0; renderPassageNavulators(); resetSessionLog(); loadLevel3Passage(); }
+        function renderPassageNavulators() { const nav=document.getElementById('passage-navigator-buttons'); nav.innerHTML=''; passagesDatabase.forEach((p,i)=>{ const b=document.createElement('button'); b.className=`px-3 py-1 text-xs rounded ${i===activePassageIndex?'bg-indigo-600 text-white':'bg-slate-200'}`; b.innerText=p.title.split(':')[0]; b.onclick=()=>switchLevel3Passage(i+1); nav.appendChild(b); }); }
+        function switchLevel3Passage(n) { activePassageIndex=n-1; renderPassageNavulators(); loadLevel3Passage(); }
+        function loadLevel3Passage() {
+            isClassificationMode=false; selectedL3Words=[]; document.getElementById('level3-classification-section').classList.add('hidden'); document.getElementById('btn-level3-action').innerText="Kategorikan";
+            const b=document.getElementById('interactive-text-box'); b.innerHTML='';
+            passagesDatabase[activePassageIndex].text.split(' ').forEach((w,i)=>{ const cl=w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""); const s=document.createElement('span'); s.innerText=w+' '; s.id=`l3-${i}`; s.className="cursor-pointer p-1 rounded hover:bg-indigo-100 transition-all font-semibold inline-block"; if(cl.length>0) s.onclick=()=>toggleL3Word(cl, `l3-${i}`); b.appendChild(s); });
+        }
+        function toggleL3Word(w, id) { if(isClassificationMode) return; const el=document.getElementById(id); const ix=selectedL3Words.findIndex(x=>x.id===id); if(ix>-1){ selectedL3Words.splice(ix,1); el.classList.remove('bg-indigo-200'); } else { selectedL3Words.push({id:id, word:w}); el.classList.add('bg-indigo-200'); } playSfx('success'); }
+        function proceedToClassification() {
+            if(selectedL3Words.length===0){ Swal.fire('','Pilih kata.','warning'); return; }
+            if(!isClassificationMode){ isClassificationMode=true; document.getElementById('level3-classification-section').classList.remove('hidden'); document.getElementById('btn-level3-action').innerText="Sahkan"; const c=document.getElementById('level3-classification-list'); c.innerHTML=''; selectedL3Words.forEach((s,i)=>{ s.userCategory=s.userCategory||''; c.innerHTML += `<div class="p-3 bg-white border rounded flex justify-between items-center"><span class="font-bold">${s.word}</span><div class="flex gap-1"><button onclick="selectL3Cat(${i},'Imbuhan Awalan')" class="px-2 py-1 text-xs border rounded ${s.userCategory==='Imbuhan Awalan'?'bg-blue-500 text-white':''}">Awalan</button><button onclick="selectL3Cat(${i},'Imbuhan Akhiran')" class="px-2 py-1 text-xs border rounded ${s.userCategory==='Imbuhan Akhiran'?'bg-pink-500 text-white':''}">Akhiran</button><button onclick="selectL3Cat(${i},'Imbuhan Apitan')" class="px-2 py-1 text-xs border rounded ${s.userCategory==='Imbuhan Apitan'?'bg-emerald-500 text-white':''}">Apitan</button><button onclick="selectL3Cat(${i},'Imbuhan Sisipan')" class="px-2 py-1 text-xs border rounded ${s.userCategory==='Imbuhan Sisipan'?'bg-purple-500 text-white':''}">Sisipan</button></div></div>`; }); } else { verifyLevel3Answers(); }
+        }
+        function selectL3Cat(i, cat) { selectedL3Words[i].userCategory=cat; isClassificationMode=false; proceedToClassification(); playSfx('success'); }
+        function verifyLevel3Answers() {
+            const pAns = passagesDatabase[activePassageIndex].answers; let c=0;
+            selectedL3Words.forEach(s=>{ const match=pAns.find(a=>a.word.toLowerCase()===s.word.toLowerCase()); const isC=match&&match.type===s.userCategory; if(isC) c++; currentSessionLog.push({item:s.word, user:s.userCategory||'Tiada', correct:match?match.type:'Bukan Imbuhan', isCorrect:isC}); });
+            const total = pAns.length; const rec = {name:currentUser.name, class:currentUser.class, sekolah:currentUser.sekolah, aliran:currentUser.aliran, activity:`Tahap 3`, score:`${c}/${total}`, status:c===total?'Cemerlang':'Bimbingan', time:new Date().toLocaleString()}; scoresDatabase.push(rec); db.ref('tarkim/scores').push().set(rec);if(googleSheetsApiUrl) sendScoreToGoogleSheets(rec); starsCollected+=c; updateStarsDisplay(); 
+            if(c === total) { triggerConfetti(); playSfx('success'); } else { triggerWrongEffect(); playSfx('fail'); }
+            Swal.fire({title:'Direkod!', html:`<p class="text-lg">Markah: <strong>${c}/${total}</strong></p>`, icon:'success', showDenyButton:true, confirmButtonText:'Teruskan', denyButtonText:'Jana PDF'}).then(r=>{ if(r.isDenied) showReportAndPrint('Tahap 3', `${c}/${total}`); else showSection('permainan'); });
+        }
+
+        // 8. KUIZ FORMATIF
+        let currentQuizIndex=0; let quizAnswersCollected=[]; let tempSelectedAnswer='';
+        function startQuiz() { if(quizDatabase.length===0) return; showScreen('section-kuiz'); currentQuizIndex=0; quizAnswersCollected=[]; resetSessionLog(); loadQuizQuestion(); }
+        function loadQuizQuestion() {
+            const q = quizDatabase[currentQuizIndex]; document.getElementById('quiz-question-num').innerText = `Soalan ${currentQuizIndex+1} / ${quizDatabase.length}`; document.getElementById('quiz-question-text').innerText = q.q;
+            const c = document.getElementById('quiz-options-container'); c.innerHTML='';
+            q.options.forEach(o=>{ const b = document.createElement('button'); b.className="quiz-opt-btn w-full p-4 border-2 rounded-xl text-left font-bold"; b.innerText=o; b.onclick=()=>selectQuizOption(b,o); c.appendChild(b); }); document.getElementById('quiz-next-btn').disabled=true;
+        }
+        function selectQuizOption(btn, opt) { document.querySelectorAll('.quiz-opt-btn').forEach(b=>b.classList.remove('border-brand-mint','bg-emerald-50')); btn.classList.add('border-brand-mint','bg-emerald-50'); tempSelectedAnswer=opt; document.getElementById('quiz-next-btn').disabled=false; }
+        function nextQuizQuestion() {
+            quizAnswersCollected.push(tempSelectedAnswer); currentQuizIndex++;
+            if(currentQuizIndex < quizDatabase.length) loadQuizQuestion(); else {
+                let s=0; quizDatabase.forEach((q,i)=>{ const isC = quizAnswersCollected[i]===q.correct; if(isC) s++; currentSessionLog.push({item:q.q, user:quizAnswersCollected[i]||'Tiada', correct:q.correct, isCorrect:isC}); });
+                const rec = {name:currentUser.name, class:currentUser.class, sekolah:currentUser.sekolah, aliran:currentUser.aliran, activity:"Kuiz Formatif", score:`${s}/${quizDatabase.length}`, status:"Selesai", time:new Date().toLocaleString()}; scoresDatabase.push(rec); db.ref('tarkim/scores').push().set(rec); if(googleSheetsApiUrl) sendScoreToGoogleSheets(rec); starsCollected+=s; updateStarsDisplay(); 
+                if(s >= quizDatabase.length/2) { triggerConfetti(); playSfx('success'); } else { triggerWrongEffect(); playSfx('fail'); }
+                Swal.fire({title:'Selesai!', html:`<p class="text-lg">Skor: <strong>${s}/${quizDatabase.length}</strong></p>`, icon:'success', showDenyButton:true, confirmButtonText:'Kembali', denyButtonText:'Jana PDF'}).then(r=>{ if(r.isDenied) showReportAndPrint('Kuiz Formatif', `${s}/${quizDatabase.length}`); else showScreen('screen-menu'); });
+            }
+        }
+
+        // 9. CABARAN TARKIM: MARIO ADVENTURE
+        let worldX=0; let playerX=150; let isMoving=false; let moveDir=''; let marioCurrentQ=0; let stesenDilewati=[]; let animationFrameId;
+        function startMarioGame() { if(quizDatabase.length===0) return; showScreen('section-mario'); marioCurrentQ=0; worldX=0; playerX=150; stesenDilewati=[]; resetSessionLog(); document.getElementById('mario-score-num').innerText="0"; document.getElementById('mario-avatar-icon').className=`fa-solid ${selectedAvatar} text-blue-600 drop-shadow-xl`; buildGameWorld(); requestAnimationFrame(gameLoop); }
+        function buildGameWorld() {
+            const stations = document.getElementById('mario-stations-layer'); stations.innerHTML = '';
+            quizDatabase.forEach((q, i) => { const posX = 600 + (i * 600); const s = document.createElement('div'); s.className = "station-gate"; s.style.left = posX + "px"; s.id = `station-${i}`; s.innerHTML = `<div class="bg-yellow-400 w-12 h-12 rounded-lg border-4 border-yellow-600 flex items-center justify-center text-white font-bold mb-2 animate-float">?</div><span class="bg-white px-2 py-0.5 rounded-full text-[9px] font-bold text-blue-500 uppercase">Stesen ${i+1}</span>`; stations.appendChild(s); });
+            const finish = document.createElement('div'); finish.className = "absolute bottom-20 w-24 h-40 bg-white border-l-8 border-r-8 border-brand-mint flex flex-col justify-center items-center"; finish.style.left = (600 + quizDatabase.length * 600) + "px"; finish.innerHTML = `<i class="fa-solid fa-flag-checkered text-4xl text-slate-800 animate-bounce"></i><span class="text-[10px] font-bold">TAMAT</span>`; stations.appendChild(finish);
+        }
+        function gameLoop() {
+            if(isMoving) {
+                if(moveDir === 'right') worldX -= 8;
+                if(moveDir === 'left' && worldX < 0) worldX += 8;
+                document.getElementById('mario-scrolling-layer').style.left = worldX + "px";
+                document.getElementById('mario-avatar-icon').classList.add('animate-walk');
+                checkStationCollision();
+            } else { document.getElementById('mario-avatar-icon').classList.remove('animate-walk'); }
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+        function startMoving(dir) { isMoving = true; moveDir = dir; } function stopMoving() { isMoving = false; }
+        
+        function checkStationCollision() {
+            const currentWorldPos = Math.abs(worldX) + playerX; const finishLine = 600 + quizDatabase.length * 600; 
+            if(currentWorldPos >= finishLine) { cancelAnimationFrame(animationFrameId); finishMarioGame(); return; }
+            if (marioCurrentQ < quizDatabase.length) {
+                const targetStationX = 600 + (marioCurrentQ * 600);
+                if(currentWorldPos >= targetStationX && currentWorldPos <= targetStationX + 50 && !stesenDilewati.includes(marioCurrentQ)) { stopMoving(); openQuestionStation(); }
+            }
+        }
+        function openQuestionStation() {
+            if (marioCurrentQ >= quizDatabase.length) return; const q = quizDatabase[marioCurrentQ]; if (!q) return;
+            const popup = document.getElementById('mario-question-popup'); const grid = document.getElementById('mario-options-grid'); document.getElementById('mario-q-text').innerText = q.q; grid.innerHTML = '';
+            q.options.forEach(o => { const b = document.createElement('button'); b.className = "mario-block p-4 text-white font-bold rounded-xl text-sm"; b.innerText = o; b.onclick = () => handleMarioAnswer(o, q.correct); grid.appendChild(b); }); popup.classList.remove('hidden');
+        }
+        function handleMarioAnswer(sel, cor) {
+            const isC = (sel === cor); currentSessionLog.push({ item: quizDatabase[marioCurrentQ].q, user: sel, correct: cor, isCorrect: isC });
+            if(isC) { playSfx('coin'); document.getElementById('mario-score-num').innerText = parseInt(document.getElementById('mario-score-num').innerText) + 1; Swal.fire({title:'TEPAT!', icon:'success', timer:1000, showConfirmButton:false}); } 
+            else { triggerWrongEffect(); playSfx('fail'); Swal.fire({title:'SALAH!', text:'Jawapan yang betul ialah: ' + cor, icon:'error', timer:1500, showConfirmButton:false}); }
+            document.getElementById('mario-question-popup').classList.add('hidden'); stesenDilewati.push(marioCurrentQ); marioCurrentQ++; 
+        }
+        function finishMarioGame() {
+            const s = parseInt(document.getElementById('mario-score-num').innerText); const total = quizDatabase.length; const pct = (s / total) * 100;
+            let anugerah = "Penyertaan"; let ikon = "fa-award text-blue-400"; let warna = "text-blue-500";
+            if(pct >= 80) { anugerah = "Emas"; ikon = "fa-medal text-yellow-400"; warna = "text-yellow-500"; triggerConfetti(); playSfx('success'); }
+            else if(pct >= 50) { anugerah = "Perak"; ikon = "fa-medal text-slate-400"; warna = "text-slate-500"; triggerConfetti(); playSfx('success'); }
+            else if(pct >= 20) { anugerah = "Gangsa"; ikon = "fa-medal text-orange-600"; warna = "text-orange-600"; playSfx('success'); }
+            else { playSfx('fail'); triggerWrongEffect(); }
+
+            const rec = {name:currentUser.name, class:currentUser.class, sekolah:currentUser.sekolah, aliran:currentUser.aliran, activity:`Cabaran TarKiM (${anugerah})`, score:`${s}/${total}`, status:`Anugerah ${anugerah}`, time:new Date().toLocaleString()}; 
+            scoresDatabase.push(rec); db.ref('tarkim/scores').push().set(rec);
+            starsCollected += s; updateStarsDisplay(); if(googleSheetsApiUrl) sendScoreToGoogleSheets(rec); 
+            
+            Swal.fire({ title: 'MISI SELESAI!', html: `<div class="text-brand-darkSlate font-bold text-2xl mb-4">REVOLUSI BAHASA!</div><div class="mb-4 ${warna}"><i class="fa-solid ${ikon} text-6xl drop-shadow-md mb-2"></i><br><span class="font-bold text-xl uppercase tracking-widest">Anugerah ${anugerah}</span></div><p class="font-bold text-lg text-slate-700">Skor Coin: ${s} / ${total}</p>`, icon: 'success', showDenyButton: true, confirmButtonColor: '#3B82F6', denyButtonColor: '#10B981', confirmButtonText: 'Lobi', denyButtonText: '<i class="fa-solid fa-file-pdf"></i> Jana Laporan (PDF)' }).then(r => { if(r.isDenied) showReportAndPrint(`Cabaran TarKiM (Anugerah ${anugerah})`, `${s}/${total}`); else goBackToMenu(); });
+        }
+        function quitMarioGame() { cancelAnimationFrame(animationFrameId); Swal.fire({title:'Keluar?', showCancelButton:true}).then(r=>{if(r.isConfirmed)goBackToMenu(); else requestAnimationFrame(gameLoop);}); }
+
+        // 10. ADMIN CMS & ANALYTICS
+        let performanceChartInstance = null;
+        function showAdminView() { Swal.fire({title:'Akses Pentadbir', input:'password', showCancelButton:true, preConfirm:(p)=>{if(p==='cikgu123')return true; Swal.showValidationMessage('Salah!'); return false;}}).then(r=>{if(r.isConfirmed){showScreen('section-admin'); switchAdminTab('scores');}}); }
+        function exitAdminView() { showScreen('screen-login'); }
+        function switchAdminTab(t) { 
+            ['scores','analytics','words','passages','quiz','media','tech'].forEach(id=>{ const tb=document.getElementById(`admin-tab-${id}`); if(tb) tb.classList.add('hidden'); const btn=document.getElementById(`btn-tab-${id}`); if(btn) btn.className="px-4 py-2 font-bold text-sm border-b-2 border-transparent text-slate-500"; }); 
+            const targetT = document.getElementById(`admin-tab-${t.replace('edit-','')}`); if(targetT) targetT.classList.remove('hidden'); 
+            const targetB = document.getElementById(`btn-tab-${t}`); if(targetB) targetB.className="px-4 py-2 font-bold text-sm border-b-2 border-brand-mint text-brand-mint"; 
+            if(t==='scores') loadAdminScoresTable(); 
+            if(t==='analytics') loadAdminAnalytics();
+            if(t==='edit-words') loadAdminWordList(); 
+            if(t==='edit-passages') loadPassageToEditor(); 
+            if(t==='edit-quiz') loadQuizEditorQuestionsList(); 
+        }
+        
+        function loadAdminScoresTable() { 
+            const b = document.getElementById('table-scores-body'); b.innerHTML=''; 
+            [...scoresDatabase].reverse().forEach(s => { 
+                const al = s.aliran === "Pendidikan Khas" ? `<span class="bg-purple-100 text-purple-700 px-1 rounded text-[10px]">PPKI</span>` : `<span class="bg-blue-100 text-blue-700 px-1 rounded text-[10px]">PERDANA</span>`;
+                b.innerHTML += `<tr class="border-b hover:bg-slate-50"><td class="p-2 font-bold text-slate-700">${s.name}<br>${al}</td><td class="p-2 text-slate-500">${s.class}</td><td class="p-2 text-indigo-600 font-semibold">${s.activity}</td><td class="p-2 text-emerald-600 font-bold">${s.score}</td><td class="p-2 text-slate-600">${s.status}</td></tr>`; 
+            }); 
+        }
+        function clearLocalStorageScores() { scoresDatabase=[]; localStorage.removeItem('tarkim_scores_v17'); loadAdminScoresTable(); loadAdminAnalytics(); Swal.fire('Dibersihkan!','','success'); }
+
+        function loadAdminAnalytics() {
+            let activities = ["Tahap 1", "Tahap 2", "Tahap 3", "Kuiz Formatif", "Cabaran TarKiM"];
+            let stats = { "Perdana": {}, "Pendidikan Khas": {} };
+            
+            activities.forEach(act => {
+                stats["Perdana"][act] = { totalPct: 0, count: 0 };
+                stats["Pendidikan Khas"][act] = { totalPct: 0, count: 0 };
+            });
+
+            scoresDatabase.forEach(rec => {
+                let aliran = rec.aliran === "Pendidikan Khas" ? "Pendidikan Khas" : "Perdana"; 
+                let actBase = rec.activity;
+                if(actBase.includes('Tahap 1')) actBase = "Tahap 1";
+                else if(actBase.includes('Tahap 2')) actBase = "Tahap 2";
+                else if(actBase.includes('Tahap 3')) actBase = "Tahap 3";
+                else if(actBase.includes('Kuiz Formatif')) actBase = "Kuiz Formatif";
+                else if(actBase.includes('Cabaran TarKiM')) actBase = "Cabaran TarKiM";
+                
+                if(activities.includes(actBase)) {
+                    let parts = rec.score.split('/');
+                    if(parts.length === 2) {
+                        let pct = (parseFloat(parts[0]) / parseFloat(parts[1])) * 100;
+                        stats[aliran][actBase].totalPct += pct;
+                        stats[aliran][actBase].count += 1;
+                    }
+                }
+            });
+
+            let dataPerdana = activities.map(act => stats["Perdana"][act].count > 0 ? (stats["Perdana"][act].totalPct / stats["Perdana"][act].count).toFixed(1) : 0);
+            let dataPPKI = activities.map(act => stats["Pendidikan Khas"][act].count > 0 ? (stats["Pendidikan Khas"][act].totalPct / stats["Pendidikan Khas"][act].count).toFixed(1) : 0);
+
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            if(performanceChartInstance) performanceChartInstance.destroy();
+            
+            performanceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: activities,
+                    datasets: [
+                        { label: 'Perdana - Purata Skor (%)', data: dataPerdana, backgroundColor: 'rgba(59, 130, 246, 0.8)', borderColor: 'rgba(37, 99, 235, 1)', borderWidth: 1, borderRadius: 4 },
+                        { label: 'Pendidikan Khas - Purata Skor (%)', data: dataPPKI, backgroundColor: 'rgba(16, 185, 129, 0.8)', borderColor: 'rgba(5, 150, 105, 1)', borderWidth: 1, borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Markah Purata (%)', font: { weight: 'bold' } } } },
+                    plugins: { legend: { position: 'top' } }
+                }
+            });
+        }
+
+        function loadAdminWordList() { const c = document.getElementById('admin-word-list'); c.innerHTML=''; [1,2].forEach(lvl=>{ wordsDatabase[lvl].forEach(w=>{ c.innerHTML+=`<div class="flex justify-between p-2 border-b"><span class="font-bold text-xs">T${lvl}: ${w.full}</span><button onclick="deleteAdminWord(${lvl},${w.id})" class="text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button></div>`; }); }); }
+        function saveAdminWord() { const lvl=parseInt(document.getElementById('admin-word-level').value); const base=document.getElementById('admin-word-base').value; const pre=document.getElementById('admin-word-prefix').value; const suf=document.getElementById('admin-word-suffix').value; const full=document.getElementById('admin-word-full').value; const type=document.getElementById('admin-word-type').value; if(!base||!full) return Swal.fire('Ralat','Isi borang','error'); wordsDatabase[lvl].push({id:Date.now(), base:base, prefix:pre, suffix:suf, full:full, type:type}); localStorage.setItem('tarkim_words_v17', JSON.stringify(wordsDatabase)); Swal.fire('Disimpan','','success'); loadAdminWordList(); }
+        function deleteAdminWord(lvl, id) { wordsDatabase[lvl]=wordsDatabase[lvl].filter(w=>w.id!==id); localStorage.setItem('tarkim_words_v17', JSON.stringify(wordsDatabase)); loadAdminWordList(); }
+        
+        let adminTmpAnswers=[];
+        function loadPassageToEditor() { const pIdx = parseInt(document.getElementById('admin-passage-select').value); const p = passagesDatabase[pIdx]; if(p) { document.getElementById('admin-passage-title').value=p.title; document.getElementById('admin-passage-text').value=p.text; adminTmpAnswers=[...p.answers]; renderAdminTokens(adminTmpAnswers.map(a=>a.word)); } }
+        function generatePassageWordTokens() { const txt = document.getElementById('admin-passage-text').value; const unique=[]; txt.split(/\s+/).forEach(w=>{ const cl=w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""); if(cl.length>1 && !unique.includes(cl)) unique.push(cl); }); adminTmpAnswers = adminTmpAnswers.filter(a=>unique.includes(a.word)); renderAdminTokens(unique); }
+        function renderAdminTokens(words) { const c = document.getElementById('admin-passage-tokens-list'); c.innerHTML=''; words.forEach((w,i)=>{ const ans = adminTmpAnswers.find(a=>a.word===w); const isC=!!ans; const t=ans?ans.type:'Imbuhan Awalan'; c.innerHTML+=`<div class="flex justify-between items-center bg-white p-2 border rounded"><div class="flex gap-2"><input type="checkbox" id="adm-tok-${i}" ${isC?'checked':''} onchange="toggleAdmTok('${w}', this.checked)"><label class="font-bold text-xs">${w}</label></div><select onchange="updateAdmTokType('${w}', this.value)" class="border rounded text-[10px] p-1 ${isC?'':'opacity-50 pointer-events-none'}"><option ${t==='Imbuhan Awalan'?'selected':''}>Imbuhan Awalan</option><option ${t==='Imbuhan Akhiran'?'selected':''}>Imbuhan Akhiran</option><option ${t==='Imbuhan Apitan'?'selected':''}>Imbuhan Apitan</option><option ${t==='Imbuhan Sisipan'?'selected':''}>Imbuhan Sisipan</option></select></div>`; }); }
+        function toggleAdmTok(w, isChecked) { if(isChecked) adminTmpAnswers.push({word:w, type:'Imbuhan Awalan'}); else adminTmpAnswers=adminTmpAnswers.filter(a=>a.word!==w); renderAdminTokens(Array.from(document.querySelectorAll('#admin-passage-tokens-list label')).map(l=>l.innerText)); }
+        function updateAdmTokType(w, t) { const a=adminTmpAnswers.find(x=>x.word===w); if(a) a.type=t; }
+        function saveActivePassage() { const pIdx = parseInt(document.getElementById('admin-passage-select').value); passagesDatabase[pIdx] = {title:document.getElementById('admin-passage-title').value, text:document.getElementById('admin-passage-text').value, answers:[...adminTmpAnswers]}; localStorage.setItem('tarkim_passages_v17', JSON.stringify(passagesDatabase)); Swal.fire('Disimpan','','success'); }
+        
+        let activeQuizEditorIndex=0;
+        function loadQuizEditorQuestionsList() { const c = document.getElementById('admin-quiz-selector-list'); c.innerHTML=''; quizDatabase.forEach((q,i)=>{ c.innerHTML+=`<button onclick="activeQuizEditorIndex=${i}; loadQuizQuestionToEditor();" class="w-full text-left p-2 border rounded text-xs mb-1 ${i===activeQuizEditorIndex?'bg-emerald-100 border-emerald-500':'bg-white'}">S${i+1}: ${q.q.substring(0,15)}...</button>`; }); loadQuizQuestionToEditor(); }
+        function loadQuizQuestionToEditor() { const q = quizDatabase[activeQuizEditorIndex]; document.getElementById('admin-quiz-active-q-label').innerText=`Soalan ${activeQuizEditorIndex+1}`; document.getElementById('admin-quiz-q-text').value=q.q; document.getElementById('admin-quiz-q-objective').value=q.objective; for(let i=0;i<4;i++) document.getElementById(`admin-quiz-opt-${i}`).value=q.options[i]||''; const s=document.getElementById('admin-quiz-correct-select'); s.innerHTML=''; q.options.forEach(o=>s.innerHTML+=`<option value="${o}" ${o===q.correct?'selected':''}>${o}</option>`); }
+        function saveActiveQuizQuestion() { const opts = [document.getElementById('admin-quiz-opt-0').value, document.getElementById('admin-quiz-opt-1').value, document.getElementById('admin-quiz-opt-2').value, document.getElementById('admin-quiz-opt-3').value]; quizDatabase[activeQuizEditorIndex] = { q:document.getElementById('admin-quiz-q-text').value, objective:document.getElementById('admin-quiz-q-objective').value, options:opts, correct:document.getElementById('admin-quiz-correct-select').value }; localStorage.setItem('tarkim_quiz_v17', JSON.stringify(quizDatabase)); Swal.fire('Disimpan','','success'); loadQuizEditorQuestionsList(); }
+        
+        function copyAppsScriptCode() { document.getElementById('apps-script-textarea').select(); document.execCommand('copy'); Swal.fire('Disalin!','','success'); }
+        function sendScoreToGoogleSheets(score) { if(googleSheetsApiUrl) fetch(googleSheetsApiUrl, {method:'POST', mode:'no-cors', body:JSON.stringify(score)}); }
+        function testSheetsAPI() { if(!googleSheetsApiUrl) { Swal.fire('Ralat', 'Sila masukkan URL API Google Sheets.', 'error'); return; } window.open(googleSheetsApiUrl, '_blank'); }
+
+        function handleMediaFileUpload(elId, dbKey) { const f = document.getElementById(elId).files[0]; if(f){ const r=new FileReader(); r.onload=function(e){ mediaDatabase[dbKey]=e.target.result; localStorage.setItem('tarkim_media_v17', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Berjaya','Fail Imej disimpan!','success'); }; r.readAsDataURL(f); } }
+        function saveMediaUrl(dbKey, val) { if(val){ mediaDatabase[dbKey]=val; localStorage.setItem('tarkim_media_v17', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Berjaya','URL Imej disimpan!','success'); } }
+        function saveVideoLink(val) { if(val){ mediaDatabase.videoUrl=val; localStorage.setItem('tarkim_media_v17', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Berjaya','Video Disimpan','success'); } }
+        function resetMediaDefaults() { mediaDatabase={nota1:'interactive_template', nota2:'interactive_template', teknik1:'interactive_template', videoUrl:'https://www.youtube.com/embed/dQw4w9WgXcQ'}; localStorage.setItem('tarkim_media_v17', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Selesai','Media dikembalikan asal','success'); }
+
+    </script>
+</body>
+</html>
