@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TarKiM - Kumpulan Revolusi Bahasa</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Urbanist:wght@400;600;700;800&family=Press+Start+2P&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- SweetAlert2 & HTML2PDF & Confetti & Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -79,10 +83,13 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-0 sm:p-4 select-none relative" id="main-body">
 
+    <!-- Efek Flash Merah apabila salah -->
     <div id="wrong-flash-overlay" class="pointer-events-none fixed inset-0 z-[200] hidden"></div>
 
+    <!-- AUDIO LATAR BELAKANG -->
     <audio id="bgm-audio" loop src="https://cdn.pixabay.com/download/audio/2022/05/16/audio_db6591201e.mp3?filename=stranger-things-107662.mp3"></audio>
 
+    <!-- SECTION LAPORAN PDF -->
     <div id="print-report-section" class="hidden fixed inset-0 z-[100] bg-white overflow-y-auto text-slate-800 p-8">
         <div id="report-content-wrapper" class="max-w-4xl mx-auto bg-white p-10 border-2 border-slate-100 rounded-2xl shadow-sm">
             <div class="flex justify-between items-center mb-8 border-b-4 border-brand-mint pb-6">
@@ -131,7 +138,7 @@
 
         <div id="report-buttons" class="mt-8 flex gap-4 justify-center no-print pb-20">
             <button onclick="downloadPDF()" class="px-8 py-4 bg-brand-mint text-white font-bold rounded-2xl shadow-xl hover:bg-emerald-600 transition-all flex items-center gap-2 bounce-btn">
-                <i class="fa-solid fa-file-pdf text-xl"></i> Muat Tunrun Laporan (PDF)
+                <i class="fa-solid fa-file-pdf text-xl"></i> Muat Turun Laporan (PDF)
             </button>
             <button onclick="window.print()" class="px-8 py-4 bg-blue-500 text-white font-bold rounded-2xl shadow-xl hover:bg-blue-600 transition-all flex items-center gap-2 bounce-btn">
                 <i class="fa-solid fa-print text-xl"></i> Cetak Laporan
@@ -142,6 +149,7 @@
         </div>
     </div>
 
+    <!-- CANVAS UTAMA APLIKASI -->
     <div id="app-canvas" class="w-full max-w-[1280px] h-[720px] bg-brand-cream rounded-2xl shadow-2xl overflow-hidden relative border-4 border-white flex flex-col justify-between">
         
         <header id="app-header" class="hidden w-full px-6 py-4 bg-white/90 backdrop-blur-md border-b border-slate-100 flex justify-between items-center z-10">
@@ -164,11 +172,16 @@
 
         <main class="flex-grow flex flex-col items-center justify-start px-12 py-6 z-10 overflow-y-auto w-full relative">
             
+            <!-- 1. SKRIN LOG MASUK -->
             <div id="screen-login" class="w-full max-w-md bg-white p-8 rounded-3xl shadow-2xl border border-slate-100 flex flex-col items-center my-auto">
                 <div class="w-20 h-20 bg-brand-softMint rounded-full flex items-center justify-center text-brand-mint text-4xl mb-4 shadow-inner"><i class="fa-solid fa-rocket animate-bounce"></i></div>
                 <h2 class="font-heading font-bold text-2xl text-brand-darkSlate mb-1 text-center">Log Masuk</h2>
                 <p class="text-slate-400 text-[10px] mb-6 text-center font-bold uppercase tracking-widest">Aplikasi Inovasi Kumpulan Revolusi Bahasa</p>
                 
+                <div id="login-offline-warning" class="hidden w-full bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold p-3 rounded-xl mb-4 text-center">
+                    ⚠️ Amaran: Pangkalan Data (Google Sheets) belum diisi oleh Cikgu di dalam kod. Data anda tidak akan bersambung dengan rakan lain.
+                </div>
+
                 <div class="w-full space-y-3">
                     <div class="mb-4">
                         <label class="block text-[10px] font-bold uppercase text-slate-500 mb-2 text-center">Pilih Avatar</label>
@@ -192,11 +205,12 @@
 
                     <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
                         <button onclick="showAdminView()" class="text-slate-300 hover:text-slate-500 text-[10px] font-bold uppercase tracking-widest"><i class="fa-solid fa-key"></i> Pentadbir</button>
-                        <button onclick="showLeaderboardFromLogin()" class="text-amber-500 text-[10px] font-bold uppercase tracking-widest"><i class="fa-solid fa-trophy"></i> Juara</button>
+                        <button onclick="showLeaderboardFromLogin()" class="text-amber-500 text-[10px] font-bold uppercase tracking-widest"><i class="fa-solid fa-trophy"></i> Papan Juara</button>
                     </div>
                 </div>
             </div>
 
+            <!-- 2. SKRIN MENU UTAMA -->
             <div id="screen-menu" class="hidden w-full max-w-4xl flex flex-col items-center my-auto">
                 <h2 class="font-heading font-bold text-3xl text-brand-darkSlate mb-8 text-center">Menu Utama</h2>
                 <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -221,6 +235,7 @@
                         <div><h3 class="font-heading font-bold text-xl text-brand-darkSlate">Uji Minda (Kuiz)</h3><p class="text-slate-500 text-xs">Uji kefahaman untuk ganjaran.</p></div>
                     </button>
                     
+                    <!-- GAME CABARAN TARKIM (SIDE SCROLLER) -->
                     <button onclick="showSection('mario')" class="bounce-btn md:col-span-2 bg-gradient-to-r from-blue-500 to-indigo-600 p-6 rounded-3xl flex items-center gap-6 shadow-xl relative overflow-hidden group">
                         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')] opacity-20"></div>
                         <div class="w-16 h-16 bg-yellow-400 rounded-2xl flex items-center justify-center text-white text-3xl shadow-inner border-4 border-yellow-200 animate-bounce"><i class="fa-solid fa-flag-checkered"></i></div>
@@ -239,6 +254,7 @@
                 </div>
             </div>
 
+            <!-- 3. SEKSYEN NOTA INTERAKTIF -->
             <div id="section-nota" class="hidden w-full max-w-5xl flex flex-col">
                 <div class="flex justify-between items-center mb-4"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-brand-darkSlate">Nota Interaktif</h2></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
@@ -247,6 +263,7 @@
                 </div>
             </div>
             
+            <!-- 4. SEKSYEN TEKNIK TARKIM -->
             <div id="section-teknik" class="hidden w-full max-w-4xl flex flex-col">
                 <div class="flex justify-between items-center mb-6"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-brand-darkSlate">Teknik TarKiM</h2></div>
                 <div class="bg-white p-8 rounded-2xl shadow-sm flex flex-col md:flex-row gap-8 items-center">
@@ -262,11 +279,13 @@
                 </div>
             </div>
             
+            <!-- 5. SEKSYEN VIDEO PEMBELAJARAN -->
             <div id="section-video" class="hidden w-full max-w-4xl flex flex-col">
                 <div class="flex justify-between items-center mb-6"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-brand-darkSlate">Video Pembelajaran</h2></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm"><div class="w-full aspect-video bg-slate-900 rounded-xl overflow-hidden flex items-center justify-center"><iframe id="video-frame" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe></div></div>
             </div>
             
+            <!-- 6. SEKSYEN PERMAINAN INTERAKTIF -->
             <div id="section-permainan" class="hidden w-full max-w-4xl flex flex-col">
                 <div id="permainan-main-header" class="flex justify-between items-center mb-6 w-full"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-brand-darkSlate">Latihan Pengukuhan</h2></div>
                 <div id="level-selection" class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
@@ -274,6 +293,7 @@
                     <button onclick="startLevel(2)" class="bounce-btn bg-white hover:border-amber-500 border-2 border-slate-100 p-8 rounded-2xl flex flex-col items-center text-center shadow-sm"><div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-3xl mb-4"><i class="fa-solid fa-tree"></i></div><h3 class="font-heading font-bold text-xl mb-2">Tahap 2</h3><p class="text-xs font-bold text-amber-600 uppercase mb-2">Sederhana</p></button>
                     <button onclick="startLevel(3)" class="bounce-btn bg-white hover:border-indigo-500 border-2 border-slate-100 p-8 rounded-2xl flex flex-col items-center text-center shadow-sm"><div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-3xl mb-4"><i class="fa-solid fa-mountain"></i></div><h3 class="font-heading font-bold text-xl mb-2">Tahap 3</h3><p class="text-xs font-bold text-indigo-600 uppercase mb-2">Tinggi</p></button>
                 </div>
+                <!-- GAMEPLAY AREA T1 & T2 -->
                 <div id="gameplay-area" class="hidden w-full bg-white rounded-2xl p-6 shadow-md flex flex-col items-center relative">
                     <div class="flex justify-between items-center w-full mb-4"><button onclick="exitGameplayToMenu()" class="text-emerald-700 bg-emerald-50 px-4 py-2 rounded-xl font-bold text-sm bounce-btn"><i class="fa-solid fa-arrow-left"></i> Pilihan Tahap</button><span id="active-level-label" class="text-sm font-bold text-brand-mint">Tahap 1</span></div>
                     <div class="w-full flex justify-between items-center mb-4 text-xs font-bold text-slate-500 uppercase"><span id="game-step-counter">Latihan 1 / 5</span><div class="w-1/2 bg-slate-100 h-2.5 rounded-full"><div id="game-progress-bar" class="bg-brand-mint h-full transition-all" style="width:20%;"></div></div></div>
@@ -297,6 +317,7 @@
                     <div class="w-full bg-slate-100 rounded-xl p-4 mb-6 border border-slate-200"><div id="draggable-options-pool" class="flex flex-wrap gap-2 justify-center max-h-[150px] overflow-y-auto"></div></div>
                     <div class="flex gap-4"><button onclick="resetGameplayInput()" class="px-6 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl bounce-btn">Padam</button><button onclick="verifyDeconstruction()" class="px-8 py-3 bg-brand-mint text-white font-bold rounded-xl shadow-lg hover:bg-emerald-600 bounce-btn">Sahkan Jawapan</button></div>
                 </div>
+                <!-- GAMEPLAY AREA T3 -->
                 <div id="gameplay-area-level3" class="hidden w-full bg-white rounded-2xl p-6 shadow-md flex flex-col items-center">
                     <div class="w-full flex justify-between items-center mb-4"><button onclick="exitGameplayToMenu()" class="text-indigo-700 bg-indigo-50 px-4 py-2 rounded-xl font-bold text-sm bounce-btn"><i class="fa-solid fa-arrow-left"></i> Pilihan Tahap</button><div id="passage-navigator-buttons" class="flex gap-2"></div></div>
                     <div id="interactive-text-box" class="w-full bg-slate-50 p-6 rounded-2xl border border-slate-200 text-lg leading-relaxed mb-6 text-left"></div>
@@ -305,6 +326,7 @@
                 </div>
             </div>
 
+            <!-- 7. SEKSYEN KUIZ FORMATIF -->
             <div id="section-kuiz" class="hidden w-full max-w-3xl flex flex-col my-auto">
                 <div class="flex justify-between items-center mb-6"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-brand-darkSlate">Kuiz Formatif TarKiM</h2></div>
                 <div class="bg-white rounded-2xl p-8 shadow-md flex flex-col items-center">
@@ -315,6 +337,7 @@
                 </div>
             </div>
 
+            <!-- 8. CABARAN TARKIM (MARIO SIDE SCROLLING) -->
             <div id="section-mario" class="hidden w-full h-[550px] flex flex-col my-auto relative">
                 <div class="flex justify-between items-center mb-4 z-50">
                     <button onclick="quitMarioGame()" class="bg-red-500 text-white font-bold px-6 py-3 rounded-xl border-b-4 border-red-700 hover:bg-red-600 bounce-btn text-xs uppercase shadow-lg"><i class="fa-solid fa-door-open"></i> Berhenti</button>
@@ -351,19 +374,24 @@
 
                 <div class="absolute bottom-[-20px] left-0 right-0 flex justify-center gap-12 z-[110] no-print p-4">
                     <button onmousedown="startMoving('left')" onmouseup="stopMoving()" onmouseleave="stopMoving()" ontouchstart="startMoving('left')" ontouchend="stopMoving()" class="w-20 h-20 bg-slate-800/90 rounded-full text-white text-4xl border-4 border-slate-600 active:scale-90 transition-transform shadow-xl"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button onmousedown="startMoving('right')" onmouseup="stopMoving()" onmouseleave="stopMoving()" ontouchstart="startMoving('left')" ontouchend="stopMoving()" class="w-20 h-20 bg-slate-800/90 rounded-full text-white text-4xl border-4 border-slate-600 active:scale-90 transition-transform shadow-xl"><i class="fa-solid fa-arrow-right"></i></button>
+                    <button onmousedown="startMoving('right')" onmouseup="stopMoving()" onmouseleave="stopMoving()" ontouchstart="startMoving('right')" ontouchend="stopMoving()" class="w-20 h-20 bg-slate-800/90 rounded-full text-white text-4xl border-4 border-slate-600 active:scale-90 transition-transform shadow-xl"><i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
 
+            <!-- 9. LEADERBOARD -->
             <div id="section-leaderboard" class="hidden w-full max-w-4xl flex flex-col items-center my-auto">
                 <div class="w-full flex justify-between items-center mb-6"><button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button><h2 class="font-heading font-bold text-2xl text-amber-500"><i class="fa-solid fa-trophy"></i> Papan Pendahulu</h2></div>
                 <div class="w-full bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 mb-6 shadow-sm flex items-center justify-between">
                     <div class="flex items-center gap-4"><div class="w-16 h-16 bg-white rounded-full border-4 border-amber-400 flex items-center justify-center text-3xl text-amber-500"><i id="lb-my-avatar" class="fa-solid fa-user"></i></div><div><h3 id="lb-my-name" class="font-bold text-xl text-slate-800">Nama Saya</h3><p id="lb-my-class" class="text-slate-500 text-sm">Kelas</p></div></div>
                     <div class="text-right"><div class="text-amber-500 font-bold text-3xl"><i class="fa-solid fa-star"></i> <span id="lb-my-stars">0</span></div></div>
                 </div>
+                
+                <div class="w-full text-center mb-4"><button onclick="fetchRealtimeData(true)" class="bg-blue-100 text-blue-600 hover:bg-blue-200 px-4 py-2 rounded-full text-xs font-bold shadow-sm transition"><i class="fa-solid fa-rotate"></i> Kemas Kini Senarai Terkini</button></div>
+
                 <div class="w-full bg-white rounded-2xl shadow-md overflow-hidden"><div class="bg-slate-50 px-6 py-3 border-b text-xs font-bold text-slate-400 uppercase flex justify-between"><span>Kedudukan & Nama</span><span>Bintang</span></div><div id="leaderboard-list" class="divide-y max-h-[350px] overflow-y-auto"></div></div>
             </div>
 
+            <!-- 10. MAKLUM BALAS -->
             <div id="section-maklumbalas" class="hidden w-full max-w-4xl flex flex-col items-center my-auto">
                 <div class="w-full flex justify-between items-center mb-6">
                     <button onclick="goBackToMenu()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-chevron-left"></i> Menu</button>
@@ -380,6 +408,7 @@
                 </div>
             </div>
 
+            <!-- 11. ADMIN CMS -->
             <div id="section-admin" class="hidden w-full max-w-5xl flex flex-col h-full overflow-hidden">
                 <div class="flex justify-between items-center mb-4"><button onclick="exitAdminView()" class="text-slate-500 font-bold flex items-center gap-1.5 bg-white px-4 py-2 rounded-xl shadow-sm bounce-btn"><i class="fa-solid fa-arrow-left"></i> Kembali</button><h2 class="font-heading font-bold text-xl text-brand-darkSlate"><i class="fa-solid fa-screwdriver-wrench text-brand-mint"></i> Admin CMS</h2></div>
                 <div class="flex border-b mb-4 overflow-x-auto">
@@ -429,21 +458,36 @@
                     <div id="admin-tab-quiz" class="hidden grid grid-cols-12 gap-6"><div id="admin-quiz-selector-list" class="col-span-4 space-y-2 text-sm max-h-[300px] overflow-y-auto pr-2"></div><div class="col-span-8 space-y-3"><h3 id="admin-quiz-active-q-label" class="font-bold text-brand-mint">Soalan</h3><input type="text" id="admin-quiz-q-text" class="w-full border p-2 rounded font-bold" placeholder="Pernyataan"><input type="text" id="admin-quiz-q-objective" class="w-full border p-2 rounded" placeholder="Objektif"><div class="grid grid-cols-2 gap-2"><input type="text" id="admin-quiz-opt-0" class="border p-2 rounded"><input type="text" id="admin-quiz-opt-1" class="border p-2 rounded"><input type="text" id="admin-quiz-opt-2" class="border p-2 rounded"><input type="text" id="admin-quiz-opt-3" class="border p-2 rounded"></div><select id="admin-quiz-correct-select" class="w-full border p-2 rounded font-bold text-emerald-600"></select><button onclick="saveActiveQuizQuestion()" class="w-full bg-brand-mint text-white font-bold py-3 rounded">Simpan Soalan</button></div></div>
                     
                     <div id="admin-tab-media" class="hidden space-y-4">
-                        <p class="text-sm font-bold text-slate-700">Urus Imej & Video</p>
+                        <p class="text-sm font-bold text-slate-700">Urus Imej & Video (Muat Naik Fail Imej ATAU Masukkan URL)</p>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="border p-4 rounded bg-slate-50 shadow-sm"><span class="text-xs font-bold mb-2 block">Nota 1</span><input type="file" id="media-file-nota1" accept="image/*" onchange="handleMediaFileUpload('media-file-nota1', 'nota1')" class="text-xs w-full mb-2 bg-white border p-1 rounded"><input type="text" id="media-url-nota1" placeholder="Atau URL Imej" onchange="saveMediaUrl('nota1', this.value)" class="w-full border p-2 text-xs rounded"></div>
-                            <div class="border p-4 rounded bg-slate-50 shadow-sm"><span class="text-xs font-bold mb-2 block">Nota 2</span><input type="file" id="media-file-nota2" accept="image/*" onchange="handleMediaFileUpload('media-file-nota2', 'nota2')" class="text-xs w-full mb-2 bg-white border p-1 rounded"><input type="text" id="media-url-nota2" placeholder="Atau URL Imej" onchange="saveMediaUrl('nota2', this.value)" class="w-full border p-2 text-xs rounded"></div>
-                            <div class="border p-4 rounded bg-slate-50 shadow-sm"><span class="text-xs font-bold mb-2 block">Teknik TarKiM</span><input type="file" id="media-file-teknik1" accept="image/*" onchange="handleMediaFileUpload('media-file-teknik1', 'teknik1')" class="text-xs w-full mb-2 bg-white border p-1 rounded"><input type="text" id="media-url-teknik1" placeholder="Atau URL Imej" onchange="saveMediaUrl('teknik1', this.value)" class="w-full border p-2 text-xs rounded"></div>
-                            <div class="border p-4 rounded bg-slate-50 shadow-sm"><span class="text-xs font-bold mb-2 block">Video YouTube</span><input type="text" id="media-url-video" placeholder="Masukkan URL YouTube penuh" onchange="saveVideoLink(this.value)" class="w-full border p-2 text-sm rounded mt-6"></div>
+                            <div class="border p-4 rounded bg-slate-50 shadow-sm">
+                                <span class="text-xs font-bold mb-2 block text-brand-darkSlate">Nota 1 (PTKS)</span>
+                                <input type="file" id="media-file-nota1" accept="image/*" onchange="handleMediaFileUpload('media-file-nota1', 'nota1')" class="text-xs w-full mb-2 bg-white border p-1 rounded">
+                                <input type="text" id="media-url-nota1" placeholder="Atau URL Imej Nota 1" onchange="saveMediaUrl('nota1', this.value)" class="w-full border p-2 text-xs rounded focus:border-brand-mint outline-none">
+                            </div>
+                            <div class="border p-4 rounded bg-slate-50 shadow-sm">
+                                <span class="text-xs font-bold mb-2 block text-brand-darkSlate">Nota 2 (Balapan)</span>
+                                <input type="file" id="media-file-nota2" accept="image/*" onchange="handleMediaFileUpload('media-file-nota2', 'nota2')" class="text-xs w-full mb-2 bg-white border p-1 rounded">
+                                <input type="text" id="media-url-nota2" placeholder="Atau URL Imej Nota 2" onchange="saveMediaUrl('nota2', this.value)" class="w-full border p-2 text-xs rounded focus:border-brand-mint outline-none">
+                            </div>
+                            <div class="border p-4 rounded bg-slate-50 shadow-sm">
+                                <span class="text-xs font-bold mb-2 block text-brand-darkSlate">Teknik TarKiM</span>
+                                <input type="file" id="media-file-teknik1" accept="image/*" onchange="handleMediaFileUpload('media-file-teknik1', 'teknik1')" class="text-xs w-full mb-2 bg-white border p-1 rounded">
+                                <input type="text" id="media-url-teknik1" placeholder="Atau URL Imej Teknik" onchange="saveMediaUrl('teknik1', this.value)" class="w-full border p-2 text-xs rounded focus:border-brand-mint outline-none">
+                            </div>
+                            <div class="border p-4 rounded bg-slate-50 shadow-sm">
+                                <span class="text-xs font-bold mb-2 block text-brand-darkSlate">Video YouTube</span>
+                                <input type="text" id="media-url-video" placeholder="Masukkan URL YouTube penuh" onchange="saveVideoLink(this.value)" class="w-full border p-2 text-sm rounded mt-6 focus:border-brand-mint outline-none">
+                            </div>
                         </div>
                         <button onclick="resetMediaDefaults()" class="w-full bg-red-500 hover:bg-red-600 text-white text-sm py-3 rounded-xl font-bold shadow transition">Padam Semua Media (Kembali ke Infografik Asal)</button>
                     </div>
 
                     <div id="admin-tab-tech" class="hidden space-y-4">
                         <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl mb-4">
-                            <h3 class="font-bold text-blue-700 mb-2"><i class="fa-solid fa-cloud-arrow-up"></i> Skrip Pangkalan Data (Selesai!)</h3>
-                            <p class="text-xs text-blue-600 mb-4 leading-relaxed">Pautan API anda telah disematkan (hardcoded) ke dalam sistem kod secara kekal. Oleh itu, kotak memasukkan URL telah dibuang untuk mengelakkan sebarang ralat (bug) pemadaman memori oleh telefon murid.</p>
-                            <p class="text-xs font-bold text-slate-800">Sekarang ini, satu-satunya perkara yang Cikgu perlu buat ialah menyalin kod di bawah ini dan tampal ke dalam Google Apps Script (Extensions > Apps Script) Cikgu dan buat New Deployment (Anyone).</p>
+                            <h3 class="font-bold text-blue-700 mb-2"><i class="fa-solid fa-cloud-arrow-up"></i> Pangkalan Data Google Sheets (Selesai!)</h3>
+                            <p class="text-xs text-blue-600 mb-2 leading-relaxed">Pautan API Cikgu kini <b>telah tertanam kekal</b> di dalam fail HTML sistem ini. Jadi, kotak kemas kini URL telah disembunyikan supaya memori pelayar telefon murid tidak lagi memadamnya secara tidak sengaja.</p>
+                            <p class="text-xs font-bold text-slate-800">Sila pastikan Cikgu salin kod di bawah, tampal dalam ruang <b>Apps Script</b> Google Sheets Cikgu, dan buat <i>New Deployment</i>.</p>
                         </div>
 
                         <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
@@ -451,7 +495,7 @@
                                 <span class="font-bold text-sm text-slate-800">Kod Google Apps Script Baharu (Satu baris satu nama)</span>
                                 <button onclick="copyAppsScriptCode()" class="text-xs bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded font-bold shadow transition"><i class="fa-solid fa-copy"></i> Salin Kod</button>
                             </div>
-                            <textarea id="apps-script-textarea" readonly class="w-full h-48 bg-slate-900 text-emerald-400 font-mono text-[10px] p-4 rounded-xl shadow-inner outline-none">function doPost(e){try{var s=SpreadsheetApp.getActiveSpreadsheet();var p=JSON.parse(e.postData.contents);if(p.type==='score'){var sh=s.getSheetByName("Log_Skor")||s.insertSheet("Log_Skor");if(sh.getLastRow()===0){sh.appendRow(["Tarikh","Nama","Kelas","Aliran","Nama Sekolah","Latihan Tahap 1","Latihan Tahap 2","Latihan Tahap 3","Uji Minda Kuiz","Cabaran TarKiM","Status"]);}var data=sh.getDataRange().getValues();var rowIndex=-1;for(var i=1;i&lt;data.length;i++){if(data[i][1].toString().trim().toLowerCase()===p.name.toString().trim().toLowerCase()&amp;&amp;data[i][2].toString().trim().toLowerCase()===p.class.toString().trim().toLowerCase()){rowIndex=i+1;break;}}var colIndex=-1;var act=p.activity.toString();if(act.indexOf("Tahap 1")!==-1)colIndex=6;else if(act.indexOf("Tahap 2")!==-1)colIndex=7;else if(act.indexOf("Tahap 3")!==-1)colIndex=8;else if(act.indexOf("Kuiz Formatif")!==-1)colIndex=9;else if(act.indexOf("Cabaran TarKiM")!==-1)colIndex=10;if(rowIndex!==-1){sh.getRange(rowIndex,1).setValue(new Date());sh.getRange(rowIndex,4).setValue(p.aliran);sh.getRange(rowIndex,5).setValue(p.sekolah);if(colIndex!==-1)sh.getRange(rowIndex,colIndex).setValue(p.score);sh.getRange(rowIndex,11).setValue(p.status);}else{var rowData=[new Date(),p.name,p.class,p.aliran,p.sekolah,"","","","","",p.status];if(colIndex!==-1)rowData[colIndex-1]=p.score;sh.appendRow(rowData);}}return ContentService.createTextOutput(JSON.stringify({"result":"success"})).setMimeType(ContentService.MimeType.JSON);}catch(err){return ContentService.createTextOutput(JSON.stringify({"result":"error","msg":err.toString()})).setMimeType(ContentService.MimeType.JSON);}} function doGet(e){try{var s=SpreadsheetApp.getActiveSpreadsheet();var sh=s.getSheetByName("Log_Skor");var scores=[];if(sh){var data=sh.getDataRange().getDisplayValues();for(var i=1;i&lt;data.length;i++){var row=data[i];var date=row[0],name=row[1],cls=row[2],aliran=row[3],sekolah=row[4];var t1=row[5],t2=row[6],t3=row[7],kuiz=row[8],mario=row[9],status=row[10];if(t1!=="")scores.push({time:date,name:name,class:cls,sekolah:sekolah,aliran:aliran,activity:"Latihan Tahap 1",score:t1,status:status});if(t2!=="")scores.push({time:date,name:name,class:cls,sekolah:sekolah,aliran:aliran,activity:"Latihan Tahap 2",score:t2,status:status});if(t3!=="")scores.push({time:date,name:name,class:cls,sekolah:sekolah,aliran:aliran,activity:"Latihan Tahap 3",score:t3,status:status});if(kuiz!=="")scores.push({time:date,name:name,class:cls,sekolah:sekolah,aliran:aliran,activity:"Kuiz Formatif",score:kuiz,status:status});if(mario!=="")scores.push({time:date,name:name,class:cls,sekolah:sekolah,aliran:aliran,activity:"Cabaran TarKiM",score:mario,status:status});}}return ContentService.createTextOutput(JSON.stringify({scores:scores})).setMimeType(ContentService.MimeType.JSON);}catch(err){return ContentService.createTextOutput(JSON.stringify({scores:[]})).setMimeType(ContentService.MimeType.JSON);}}</textarea>
+                            <textarea id="apps-script-textarea" readonly class="w-full h-48 bg-slate-900 text-emerald-400 font-mono text-[10px] p-4 rounded-xl shadow-inner outline-none">function doPost(e){try{var s=SpreadsheetApp.getActiveSpreadsheet();var p=JSON.parse(e.postData.contents);var sh=s.getSheetByName("Log_Skor")||s.insertSheet("Log_Skor");if(sh.getLastRow()===0){sh.appendRow(["Tarikh","Nama","Kelas","Aliran","Nama Sekolah","Latihan Tahap 1","Latihan Tahap 2","Latihan Tahap 3","Kuiz Formatif","Cabaran TarKiM","Status"]);}if(p.type==='score'){var data=sh.getDataRange().getValues();var rowIndex=-1;for(var i=1;i<data.length;i++){if(data[i][1]&&data[i][2]){if(data[i][1].toString().trim().toLowerCase()===p.name.toString().trim().toLowerCase()&&data[i][2].toString().trim().toLowerCase()===p.class.toString().trim().toLowerCase()){rowIndex=i+1;break;}}}var colIndex=-1;var act=p.activity.toString();if(act.indexOf("Tahap 1")!==-1)colIndex=6;else if(act.indexOf("Tahap 2")!==-1)colIndex=7;else if(act.indexOf("Tahap 3")!==-1)colIndex=8;else if(act.indexOf("Kuiz Formatif")!==-1)colIndex=9;else if(act.indexOf("Cabaran TarKiM")!==-1)colIndex=10;if(rowIndex!==-1){sh.getRange(rowIndex,1).setValue(new Date());sh.getRange(rowIndex,4).setValue(p.aliran);sh.getRange(rowIndex,5).setValue(p.sekolah);if(colIndex!==-1)sh.getRange(rowIndex,colIndex).setValue(p.score);sh.getRange(rowIndex,11).setValue(p.status);}else{var rowData=[new Date(),p.name,p.class,p.aliran,p.sekolah,"","","","","",p.status];if(colIndex!==-1)rowData[colIndex-1]=p.score;sh.appendRow(rowData);}}else if(p.type==='state'){var dbSh=s.getSheetByName("Realtime_DB")||s.insertSheet("Realtime_DB");dbSh.getRange("A1").setValue(JSON.stringify(p.data));}return ContentService.createTextOutput(JSON.stringify({"result":"success"})).setMimeType(ContentService.MimeType.JSON);}catch(err){var errSh=SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Ralat")||SpreadsheetApp.getActiveSpreadsheet().insertSheet("Ralat");errSh.appendRow([new Date(),err.toString()]);return ContentService.createTextOutput(JSON.stringify({"result":"error","msg":err.toString()})).setMimeType(ContentService.MimeType.JSON);}} function doGet(e){try{var s=SpreadsheetApp.getActiveSpreadsheet();var sh=s.getSheetByName("Log_Skor");var scores=[];if(sh){var data=sh.getDataRange().getDisplayValues();for(var i=1;i<data.length;i++){var r=data[i];if(r[1]){if(r[5]!=="")scores.push({time:r[0],name:r[1],class:r[2],aliran:r[3],sekolah:r[4],activity:"Latihan Tahap 1",score:r[5],status:r[10]});if(r[6]!=="")scores.push({time:r[0],name:r[1],class:r[2],aliran:r[3],sekolah:r[4],activity:"Latihan Tahap 2",score:r[6],status:r[10]});if(r[7]!=="")scores.push({time:r[0],name:r[1],class:r[2],aliran:r[3],sekolah:r[4],activity:"Latihan Tahap 3",score:r[7],status:r[10]});if(r[8]!=="")scores.push({time:r[0],name:r[1],class:r[2],aliran:r[3],sekolah:r[4],activity:"Kuiz Formatif",score:r[8],status:r[10]});if(r[9]!=="")scores.push({time:r[0],name:r[1],class:r[2],aliran:r[3],sekolah:r[4],activity:"Cabaran TarKiM",score:r[9],status:r[10]});}}}var stateSh=s.getSheetByName("Realtime_DB");var state="{}";if(stateSh){state=stateSh.getRange("A1").getValue()||"{}";}return ContentService.createTextOutput(JSON.stringify({scores:scores,state:JSON.parse(state===""?"{}":state)})).setMimeType(ContentService.MimeType.JSON);}catch(err){return ContentService.createTextOutput(JSON.stringify({scores:[],state:{}})).setMimeType(ContentService.MimeType.JSON);}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -460,14 +504,16 @@
         </main>
     </div>
 
+    <!-- LOGIK JAVASCRIPT KESELURUHAN & SISTEM REAL-TIME SYNC -->
     <script>
         // ==============================================================================
-        // 🛑 LANGKAH WAJIB: TAMPAL URL GOOGLE APPS SCRIPT ANDA DI SINI
-        // Gantikan tulisan MASUKKAN_URL_DI_SINI dengan URL Web App anda.
+        // 🛑 SANGAT PENTING: TAMPAL URL GOOGLE APPS SCRIPT CIKGU DI BAWAH INI
+        // Gantikan tulisan "MASUKKAN_URL_DI_SINI" dengan URL Web App Cikgu.
+        // Jika Cikgu tak letak di sini, telefon murid TIDAK AKAN TAHU ke mana nak hantar markah!
         // ==============================================================================
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw0X3Bc03xKygm6a3M8wWpBoBxEY7zXkZQq4PudCnoUlJc3FLpbZR93-uQTTMjPeU-dfw/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoSLXyJDT-_FWTGzNjvMg5S04fUbcHkHsQc5F6tR5bK3gMrCcRdU6cmY-lv60xa0Xeew/exec";
         // ==============================================================================
-
+        
         let isAudioPlaying = false; 
         let currentUser = { name: '', class: '', sekolah: '', aliran: '', avatar: 'fa-robot', stars: 0 }; 
         let starsCollected = 0; 
@@ -499,39 +545,75 @@
         ];
 
         // --- 2. SISTEM REAL-TIME GOOGLE SHEETS TERBINA DALAM ---
-        function fetchRealtimeData() {
-            if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbw0X3Bc03xKygm6a3M8wWpBoBxEY7zXkZQq4PudCnoUlJc3FLpbZR93-uQTTMjPeU-dfw/exec") return;
-            const cacheBuster = APPS_SCRIPT_URL.includes('?') ? `&t=${new Date().getTime()}` : `?t=${new Date().getTime()}`;
+        function getApiUrl() {
+            return (APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwoSLXyJDT-_FWTGzNjvMg5S04fUbcHkHsQc5F6tR5bK3gMrCcRdU6cmY-lv60xa0Xeew/exec" && APPS_SCRIPT_URL !== "") ? APPS_SCRIPT_URL : "";
+        }
+
+        function fetchRealtimeData(isManual = false) {
+            const url = getApiUrl();
+            if(!url) return;
+            const cacheBuster = url.includes('?') ? `&t=${new Date().getTime()}` : `?t=${new Date().getTime()}`;
             
-            fetch(APPS_SCRIPT_URL + cacheBuster)
+            // Fetch dengan ciri pintasan CORS dan mengikut redirect
+            fetch(url + cacheBuster, { redirect: "follow" })
                 .then(res => res.json())
                 .then(data => {
-                    if(data && data.scores && data.scores.length > 0) {
-                        scoresDatabase = data.scores.reverse();
+                    if(data && Object.keys(data).length > 0) {
+                        if(data.scores && data.scores.length > 0) scoresDatabase = data.scores.reverse();
+                        if(data.state && Object.keys(data.state).length > 0) {
+                            if(data.state.users) usersProfileDatabase = data.state.users;
+                            if(data.state.feedbacks) feedbacksDatabase = data.state.feedbacks;
+                            if(data.state.words) wordsDatabase = data.state.words;
+                            if(data.state.quiz) quizDatabase = data.state.quiz;
+                            if(data.state.passages) passagesDatabase = data.state.passages;
+                        }
+                        
                         localStorage.setItem('tarkim_scores_v20', JSON.stringify(scoresDatabase));
+                        localStorage.setItem('tarkim_users_v20', JSON.stringify(usersProfileDatabase));
+                        localStorage.setItem('tarkim_feedback_v20', JSON.stringify(feedbacksDatabase));
                         
                         const statusEl = document.getElementById('realtime-status');
                         if(statusEl) {
                             statusEl.classList.remove('hidden');
                             statusEl.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-600');
                             statusEl.classList.remove('bg-slate-100', 'border-slate-200', 'text-slate-500');
-                            statusEl.innerHTML = `<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> Bersambung`;
+                            statusEl.innerHTML = `<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> Bersambung (Awan)`;
                         }
                         
                         if(!document.getElementById('section-leaderboard').classList.contains('hidden')) showLeaderboard();
+                        if(!document.getElementById('section-maklumbalas').classList.contains('hidden')) renderFeedbacks();
                         if(!document.getElementById('section-admin').classList.contains('hidden')) {
                             loadAdminScoresTable(); loadAdminAnalytics();
                         }
+                        
+                        if(isManual) Swal.fire('Terkini!', 'Senarai papan pendahulu telah dikemas kini.', 'success');
                     }
                 })
-                .catch(e => console.log('Mod Luar Talian (Offline).', e));
+                .catch(e => {
+                    console.log('Mod Luar Talian (Offline).', e);
+                    if(isManual) Swal.fire('Ralat Rangkaian', 'Tidak dapat menyambung ke pangkalan data.', 'error');
+                });
+        }
+
+        function syncStateToSheets() {
+            const url = getApiUrl();
+            if(!url) return;
+            const fullState = { users: usersProfileDatabase, feedbacks: feedbacksDatabase, words: wordsDatabase, passages: passagesDatabase, quiz: quizDatabase };
+            fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ type: 'state', data: fullState }) })
+            .catch(e => {
+                fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ type: 'state', data: fullState }) });
+            });
         }
 
         function sendScoreToGoogleSheets(score) { 
-            if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbw0X3Bc03xKygm6a3M8wWpBoBxEY7zXkZQq4PudCnoUlJc3FLpbZR93-uQTTMjPeU-dfw/exec") return;
+            const url = getApiUrl();
+            if(!url) return;
             score.type = 'score';
-            fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(score) })
-            .catch(e => console.error('Ralat API:', e));
+            fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(score) })
+            .then(() => { syncStateToSheets(); })
+            .catch(e => {
+                fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(score) }).then(() => syncStateToSheets());
+            });
         }
 
         function copyAppsScriptCode() { 
@@ -574,7 +656,13 @@
         // --- 4. INIT & LOGIN ---
         window.onload = function() { 
             renderAvatarSelection(); applyMediaSettings(); 
-            fetchRealtimeData(); setInterval(fetchRealtimeData, 10000);
+            
+            const url = getApiUrl();
+            if(url) {
+                fetchRealtimeData(); setInterval(fetchRealtimeData, 10000);
+            } else {
+                document.getElementById('login-offline-warning').classList.remove('hidden');
+            }
         };
         
         function renderAvatarSelection() { const c = document.getElementById('avatar-selection-container'); c.innerHTML = ''; avatarIcons.forEach(icon => { const b = document.createElement('div'); b.className = `w-12 h-12 rounded-xl flex items-center justify-center text-2xl cursor-pointer transition-all ${icon === selectedAvatar ? 'bg-brand-mint text-white shadow-lg border-2 border-emerald-600 scale-110' : 'bg-slate-100 text-slate-400'}`; b.innerHTML = `<i class="fa-solid ${icon}"></i>`; b.onclick = () => { selectedAvatar = icon; renderAvatarSelection(); playSfx('success'); }; c.appendChild(b); }); }
@@ -583,7 +671,7 @@
             if (!name || !cls || !sek || !alr) { Swal.fire('Opps!', 'Sila lengkapkan semua maklumat (Nama, Kelas, Sekolah, Aliran).', 'warning'); playSfx('fail'); return; } 
             const userId = `${name}_${cls}`; 
             if (!usersProfileDatabase[userId]) { usersProfileDatabase[userId] = { name: name, class: cls, sekolah: sek, aliran: alr, avatar: selectedAvatar }; } else { usersProfileDatabase[userId].avatar = selectedAvatar; usersProfileDatabase[userId].sekolah = sek; usersProfileDatabase[userId].aliran = alr; } 
-            localStorage.setItem('tarkim_users_v20', JSON.stringify(usersProfileDatabase));
+            localStorage.setItem('tarkim_users_v20', JSON.stringify(usersProfileDatabase)); syncStateToSheets();
             currentUser = usersProfileDatabase[userId]; 
             
             document.getElementById('header-user-info').innerText = `${name} (${cls})`; document.getElementById('header-avatar-icon').className = `fa-solid ${selectedAvatar} text-brand-mint`; document.getElementById('app-header').classList.remove('hidden');
@@ -598,7 +686,7 @@
         function exitGameplayToMenu() { document.getElementById('gameplay-area').classList.add('hidden'); document.getElementById('gameplay-area-level3').classList.add('hidden'); document.getElementById('level-selection').classList.remove('hidden'); document.getElementById('permainan-main-header').classList.remove('hidden'); }
 
         // --- PAPAN PENDAHULU REALTIME DARI GOOGLE SHEETS ---
-        function showLeaderboardFromLogin() { showLeaderboard(); }
+        function showLeaderboardFromLogin() { fetchRealtimeData(); showLeaderboard(); }
         function showLeaderboard() { 
             showScreen('section-leaderboard'); 
             const userStats = {};
@@ -648,8 +736,8 @@
         }
         function showQRCode() { let u = window.location.href.split('#')[0]; if(u.includes('blob:')) u = 'https://cikguam.github.io/tarkim/'; Swal.fire({title:'Imbas QR', imageUrl:`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(u)}&margin=10`}); }
         
-        function showFeedbackSection() { showScreen('section-maklumbalas'); renderFeedbacks(); }
-        function submitFeedback() { const f = document.getElementById('input-feedback').value.trim(); if(!f) return Swal.fire('Opps', 'Tulis maklum balas dahulu', 'warning'); feedbacksDatabase.push({ name: currentUser.name, avatar: currentUser.avatar, comment: f, time: new Date().toLocaleDateString('ms-MY') }); localStorage.setItem('tarkim_feedback_v20', JSON.stringify(feedbacksDatabase)); document.getElementById('input-feedback').value = ''; playSfx('success'); triggerConfetti(); renderFeedbacks(); Swal.fire('Berjaya', 'Maklum balas dihantar!', 'success'); }
+        function showFeedbackSection() { fetchRealtimeData(); showScreen('section-maklumbalas'); renderFeedbacks(); }
+        function submitFeedback() { const f = document.getElementById('input-feedback').value.trim(); if(!f) return Swal.fire('Opps', 'Tulis maklum balas dahulu', 'warning'); feedbacksDatabase.push({ name: currentUser.name, avatar: currentUser.avatar, comment: f, time: new Date().toLocaleDateString('ms-MY') }); localStorage.setItem('tarkim_feedback_v20', JSON.stringify(feedbacksDatabase)); syncStateToSheets(); document.getElementById('input-feedback').value = ''; playSfx('success'); triggerConfetti(); renderFeedbacks(); Swal.fire('Berjaya', 'Maklum balas dihantar!', 'success'); }
         function renderFeedbacks() { const list = document.getElementById('feedback-list'); list.innerHTML = ''; [...feedbacksDatabase].reverse().forEach(fb => { list.innerHTML += `<div class="p-4 flex gap-4 border-b border-slate-100"><div class="w-10 h-10 rounded-full border flex shrink-0 items-center justify-center bg-white"><i class="fa-solid ${fb.avatar || 'fa-user'}"></i></div><div><p class="font-bold text-slate-700">${fb.name} <span class="text-[9px] text-slate-400 ml-2">${fb.time}</span></p><p class="text-sm text-slate-600 mt-1">${fb.comment}</p></div></div>`; }); }
 
         // --- 6. MEDIA RENDER ---
@@ -668,7 +756,7 @@
             const m = Math.min(5, currentLevelWordsList.length);
             if (activeWordIndex >= m) {
                 const rec = { name: currentUser.name, class: currentUser.class, sekolah: currentUser.sekolah, aliran: currentUser.aliran, activity: `Latihan Tahap ${activeLevel}`, score: `${levelScoreTracker}/${m}`, status: (levelScoreTracker>=4)?'Cemerlang':'Bimbingan', time: new Date().toLocaleString() }; 
-                scoresDatabase.push(rec); localStorage.setItem('tarkim_scores_v18', JSON.stringify(scoresDatabase)); sendScoreToGoogleSheets(rec); 
+                scoresDatabase.push(rec); localStorage.setItem('tarkim_scores_v20', JSON.stringify(scoresDatabase)); sendScoreToGoogleSheets(rec); 
                 if(levelScoreTracker >= 4) { triggerConfetti(); playSfx('success'); } else { playSfx('fail'); }
                 Swal.fire({ title: 'Selesai!', html: `<p class="text-lg">Skor: <strong>${levelScoreTracker}/${m}</strong></p>`, icon: 'success', showDenyButton: true, confirmButtonText: 'Kembali', denyButtonText: '<i class="fa-solid fa-file-pdf"></i> Jana PDF' }).then(r=>{ if(r.isDenied) showReportAndPrint(`Latihan Tahap ${activeLevel}`, `${levelScoreTracker}/${m}`); else showSection('permainan'); }); return;
             }
@@ -788,7 +876,12 @@
 
         // --- 11. ADMIN CMS & ANALYTICS ---
         let performanceChartInstance = null;
-        function showAdminView() { Swal.fire({title:'Akses Pentadbir', input:'password', showCancelButton:true, preConfirm:(p)=>{if(p==='cikgu123')return true; Swal.showValidationMessage('Salah!'); return false;}}).then(r=>{if(r.isConfirmed){showScreen('section-admin'); switchAdminTab('scores');}}); }
+        function showAdminView() { 
+            if (APPS_SCRIPT_URL === "MASUKKAN_URL_DI_SINI" || APPS_SCRIPT_URL === "") {
+                Swal.fire('AMARAN!', 'URL Google Sheets belum ditampal ke dalam kod HTML Cikgu. Murid yang bermain sekarang tidak akan bersambung dengan Google Sheets Cikgu.', 'warning');
+            }
+            Swal.fire({title:'Akses Pentadbir', input:'password', showCancelButton:true, preConfirm:(p)=>{if(p==='cikgu123')return true; Swal.showValidationMessage('Salah!'); return false;}}).then(r=>{if(r.isConfirmed){showScreen('section-admin'); switchAdminTab('scores');}}); 
+        }
         function exitAdminView() { showScreen('screen-login'); }
         function switchAdminTab(t) { 
             ['scores','analytics','words','passages','quiz','media','tech'].forEach(id=>{ const tb=document.getElementById(`admin-tab-${id}`); if(tb) tb.classList.add('hidden'); const btn=document.getElementById(`btn-tab-${id}`); if(btn) btn.className="px-4 py-2 font-bold text-sm border-b-2 border-transparent text-slate-500"; }); 
@@ -808,7 +901,7 @@
                 b.innerHTML += `<tr class="border-b hover:bg-slate-50"><td class="p-2 font-bold text-slate-700">${s.name}<br>${al}</td><td class="p-2 text-slate-500">${s.class}</td><td class="p-2 text-indigo-600 font-semibold">${s.activity}</td><td class="p-2 text-emerald-600 font-bold">${s.score}</td><td class="p-2 text-slate-600">${s.status}</td></tr>`; 
             }); 
         }
-        function clearLocalStorageScores() { scoresDatabase=[]; localStorage.removeItem('tarkim_scores_v19'); loadAdminScoresTable(); loadAdminAnalytics(); Swal.fire('Dibersihkan!','','success'); }
+        function clearLocalStorageScores() { scoresDatabase=[]; localStorage.removeItem('tarkim_scores_v20'); loadAdminScoresTable(); loadAdminAnalytics(); syncStateToSheets(); Swal.fire('Dibersihkan!','','success'); }
 
         function loadAdminAnalytics() {
             let activities = ["Tahap 1", "Tahap 2", "Tahap 3", "Kuiz Formatif", "Cabaran TarKiM"];
@@ -862,8 +955,8 @@
         }
 
         function loadAdminWordList() { const c = document.getElementById('admin-word-list'); c.innerHTML=''; [1,2].forEach(lvl=>{ wordsDatabase[lvl].forEach(w=>{ c.innerHTML+=`<div class="flex justify-between p-2 border-b"><span class="font-bold text-xs">T${lvl}: ${w.full}</span><button onclick="deleteAdminWord(${lvl},${w.id})" class="text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button></div>`; }); }); }
-        function saveAdminWord() { const lvl=parseInt(document.getElementById('admin-word-level').value); const base=document.getElementById('admin-word-base').value; const pre=document.getElementById('admin-word-prefix').value; const suf=document.getElementById('admin-word-suffix').value; const full=document.getElementById('admin-word-full').value; const type=document.getElementById('admin-word-type').value; if(!base||!full) return Swal.fire('Ralat','Isi borang','error'); wordsDatabase[lvl].push({id:Date.now(), base:base, prefix:pre, suffix:suf, full:full, type:type}); localStorage.setItem('tarkim_words_v19', JSON.stringify(wordsDatabase)); syncStateToSheets(); Swal.fire('Disimpan','','success'); loadAdminWordList(); }
-        function deleteAdminWord(lvl, id) { wordsDatabase[lvl]=wordsDatabase[lvl].filter(w=>w.id!==id); localStorage.setItem('tarkim_words_v19', JSON.stringify(wordsDatabase)); loadAdminWordList(); }
+        function saveAdminWord() { const lvl=parseInt(document.getElementById('admin-word-level').value); const base=document.getElementById('admin-word-base').value; const pre=document.getElementById('admin-word-prefix').value; const suf=document.getElementById('admin-word-suffix').value; const full=document.getElementById('admin-word-full').value; const type=document.getElementById('admin-word-type').value; if(!base||!full) return Swal.fire('Ralat','Isi borang','error'); wordsDatabase[lvl].push({id:Date.now(), base:base, prefix:pre, suffix:suf, full:full, type:type}); localStorage.setItem('tarkim_words_v20', JSON.stringify(wordsDatabase)); syncStateToSheets(); Swal.fire('Disimpan','','success'); loadAdminWordList(); }
+        function deleteAdminWord(lvl, id) { wordsDatabase[lvl]=wordsDatabase[lvl].filter(w=>w.id!==id); localStorage.setItem('tarkim_words_v20', JSON.stringify(wordsDatabase)); syncStateToSheets(); loadAdminWordList(); }
         
         let adminTmpAnswers=[];
         function loadPassageToEditor() { const pIdx = parseInt(document.getElementById('admin-passage-select').value); const p = passagesDatabase[pIdx]; if(p) { document.getElementById('admin-passage-title').value=p.title; document.getElementById('admin-passage-text').value=p.text; adminTmpAnswers=[...p.answers]; renderAdminTokens(adminTmpAnswers.map(a=>a.word)); } }
@@ -871,17 +964,17 @@
         function renderAdminTokens(words) { const c = document.getElementById('admin-passage-tokens-list'); c.innerHTML=''; words.forEach((w,i)=>{ const ans = adminTmpAnswers.find(a=>a.word===w); const isC=!!ans; const t=ans?ans.type:'Imbuhan Awalan'; c.innerHTML+=`<div class="flex justify-between items-center bg-white p-2 border rounded"><div class="flex gap-2"><input type="checkbox" id="adm-tok-${i}" ${isC?'checked':''} onchange="toggleAdmTok('${w}', this.checked)"><label class="font-bold text-xs">${w}</label></div><select onchange="updateAdmTokType('${w}', this.value)" class="border rounded text-[10px] p-1 ${isC?'':'opacity-50 pointer-events-none'}"><option ${t==='Imbuhan Awalan'?'selected':''}>Imbuhan Awalan</option><option ${t==='Imbuhan Akhiran'?'selected':''}>Imbuhan Akhiran</option><option ${t==='Imbuhan Apitan'?'selected':''}>Imbuhan Apitan</option><option ${t==='Imbuhan Sisipan'?'selected':''}>Imbuhan Sisipan</option></select></div>`; }); }
         function toggleAdmTok(w, isChecked) { if(isChecked) adminTmpAnswers.push({word:w, type:'Imbuhan Awalan'}); else adminTmpAnswers=adminTmpAnswers.filter(a=>a.word!==w); renderAdminTokens(Array.from(document.querySelectorAll('#admin-passage-tokens-list label')).map(l=>l.innerText)); }
         function updateAdmTokType(w, t) { const a=adminTmpAnswers.find(x=>x.word===w); if(a) a.type=t; }
-        function saveActivePassage() { const pIdx = parseInt(document.getElementById('admin-passage-select').value); passagesDatabase[pIdx] = {title:document.getElementById('admin-passage-title').value, text:document.getElementById('admin-passage-text').value, answers:[...adminTmpAnswers]}; localStorage.setItem('tarkim_passages_v19', JSON.stringify(passagesDatabase)); Swal.fire('Disimpan','','success'); }
+        function saveActivePassage() { const pIdx = parseInt(document.getElementById('admin-passage-select').value); passagesDatabase[pIdx] = {title:document.getElementById('admin-passage-title').value, text:document.getElementById('admin-passage-text').value, answers:[...adminTmpAnswers]}; localStorage.setItem('tarkim_passages_v20', JSON.stringify(passagesDatabase)); syncStateToSheets(); Swal.fire('Disimpan','','success'); }
         
         let activeQuizEditorIndex=0;
         function loadQuizEditorQuestionsList() { const c = document.getElementById('admin-quiz-selector-list'); c.innerHTML=''; quizDatabase.forEach((q,i)=>{ c.innerHTML+=`<button onclick="activeQuizEditorIndex=${i}; loadQuizQuestionToEditor();" class="w-full text-left p-2 border rounded text-xs mb-1 ${i===activeQuizEditorIndex?'bg-emerald-100 border-emerald-500':'bg-white'}">S${i+1}: ${q.q.substring(0,15)}...</button>`; }); loadQuizQuestionToEditor(); }
         function loadQuizQuestionToEditor() { const q = quizDatabase[activeQuizEditorIndex]; document.getElementById('admin-quiz-active-q-label').innerText=`Soalan ${activeQuizEditorIndex+1}`; document.getElementById('admin-quiz-q-text').value=q.q; document.getElementById('admin-quiz-q-objective').value=q.objective; for(let i=0;i<4;i++) document.getElementById(`admin-quiz-opt-${i}`).value=q.options[i]||''; const s=document.getElementById('admin-quiz-correct-select'); s.innerHTML=''; q.options.forEach(o=>s.innerHTML+=`<option value="${o}" ${o===q.correct?'selected':''}>${o}</option>`); }
-        function saveActiveQuizQuestion() { const opts = [document.getElementById('admin-quiz-opt-0').value, document.getElementById('admin-quiz-opt-1').value, document.getElementById('admin-quiz-opt-2').value, document.getElementById('admin-quiz-opt-3').value]; quizDatabase[activeQuizEditorIndex] = { q:document.getElementById('admin-quiz-q-text').value, objective:document.getElementById('admin-quiz-q-objective').value, options:opts, correct:document.getElementById('admin-quiz-correct-select').value }; localStorage.setItem('tarkim_quiz_v20', JSON.stringify(quizDatabase)); loadQuizEditorQuestionsList(); }
+        function saveActiveQuizQuestion() { const opts = [document.getElementById('admin-quiz-opt-0').value, document.getElementById('admin-quiz-opt-1').value, document.getElementById('admin-quiz-opt-2').value, document.getElementById('admin-quiz-opt-3').value]; quizDatabase[activeQuizEditorIndex] = { q:document.getElementById('admin-quiz-q-text').value, objective:document.getElementById('admin-quiz-q-objective').value, options:opts, correct:document.getElementById('admin-quiz-correct-select').value }; localStorage.setItem('tarkim_quiz_v20', JSON.stringify(quizDatabase)); syncStateToSheets(); Swal.fire('Disimpan','','success'); loadQuizEditorQuestionsList(); }
         
-        function handleMediaFileUpload(elId, dbKey) { const f = document.getElementById(elId).files[0]; if(f){ const r=new FileReader(); r.onload=function(e){ mediaDatabase[dbKey]=e.target.result; localStorage.setItem('tarkim_media_v19', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Berjaya','Fail Imej disimpan!','success'); }; r.readAsDataURL(f); } }
-        function saveMediaUrl(dbKey, val) { if(val){ mediaDatabase[dbKey]=val; localStorage.setItem('tarkim_media_v19', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Berjaya','URL Imej disimpan!','success'); } }
-        function saveVideoLink(val) { if(val){ mediaDatabase.videoUrl=val; localStorage.setItem('tarkim_media_v19', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Berjaya','Video Disimpan','success'); } }
-        function resetMediaDefaults() { mediaDatabase={nota1:'interactive_template', nota2:'interactive_template', teknik1:'interactive_template', videoUrl:'https://www.youtube.com/embed/dQw4w9WgXcQ'}; localStorage.setItem('tarkim_media_v19', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Selesai','Media dikembalikan asal','success'); }
+        function handleMediaFileUpload(elId, dbKey) { const f = document.getElementById(elId).files[0]; if(f){ const r=new FileReader(); r.onload=function(e){ mediaDatabase[dbKey]=e.target.result; localStorage.setItem('tarkim_media_v20', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Berjaya','Fail Imej disimpan!','success'); }; r.readAsDataURL(f); } }
+        function saveMediaUrl(dbKey, val) { if(val){ mediaDatabase[dbKey]=val; localStorage.setItem('tarkim_media_v20', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Berjaya','URL Imej disimpan!','success'); } }
+        function saveVideoLink(val) { if(val){ mediaDatabase.videoUrl=val; localStorage.setItem('tarkim_media_v20', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Berjaya','Video Disimpan','success'); } }
+        function resetMediaDefaults() { mediaDatabase={nota1:'interactive_template', nota2:'interactive_template', teknik1:'interactive_template', videoUrl:'https://www.youtube.com/embed/dQw4w9WgXcQ'}; localStorage.setItem('tarkim_media_v20', JSON.stringify(mediaDatabase)); applyMediaSettings(); Swal.fire('Selesai','Media dikembalikan asal','success'); }
 
     </script>
 </body>
